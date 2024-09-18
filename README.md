@@ -1,4 +1,3 @@
 # CS2340C_Team29
 Members:
-Sarvesh Gade
-Tri Nguyen
+Sarvesh Gade, Tri Nguyen
