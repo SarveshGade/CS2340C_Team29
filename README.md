@@ -1,2 +1,3 @@
-# 2340-project
-Project 1 for 2340
+# CS2340C_Team29
+Members:
+Sarvesh Gade
