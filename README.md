@@ -6,3 +6,4 @@ Members:
 3) Usman Rashid
 4) Evan Romero
 5) Tanmay Gupta
+6) Aryika Kumar
