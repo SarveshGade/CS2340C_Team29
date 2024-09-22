@@ -1,5 +1,9 @@
-# CS2340C_Team29
+# Sprint0.5F24
+## Team 29 
 Members:
-Sarvesh Gade
-Tri Nguyen
-Usman Rashid
+1) Sarvesh Gade
+2) Tri Nguyen
+3) Usman Rashid
+4) Evan Romero
+5) Tanmay Gupta
+6) Aryika Kumar
