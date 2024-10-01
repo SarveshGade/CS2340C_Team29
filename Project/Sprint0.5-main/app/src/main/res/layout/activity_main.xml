@@ -37,6 +37,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.466" />
+<<<<<<< HEAD
+=======
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:backgroundTint="@color/orange"
+        app:layout_constraintTop_toBottomOf="@+id/wander_sync_welcome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/end_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close the App"
+        android:backgroundTint="@color/orange"
+        app:layout_constraintTop_toBottomOf="@+id/start_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp" />
+
+
+>>>>>>> 0007f744b513b1e28455e37758f8d8d96d67038a
 
     <Button
         android:id="@+id/start_button"

@@ -1363,6 +1363,8 @@ color bright_foreground_material_dark
 color bright_foreground_material_light
 color button_material_dark
 color button_material_light
+color call_notification_answer_color
+color call_notification_decline_color
 color cardview_dark_background
 color cardview_light_background
 color cardview_shadow_end_color
@@ -2068,6 +2070,7 @@ color mtrl_textinput_focused_box_stroke_color
 color mtrl_textinput_hovered_box_stroke_color
 color notification_action_color_filter
 color notification_icon_bg_color
+color orange
 color primary_dark_material_dark
 color primary_dark_material_light
 color primary_material_dark
@@ -2981,7 +2984,14 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable homescreen
 drawable ic_arrow_back_black_24
+drawable ic_call_answer
+drawable ic_call_answer_low
+drawable ic_call_answer_video
+drawable ic_call_answer_video_low
+drawable ic_call_decline
+drawable ic_call_decline_low
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_keyboard_black_24dp
@@ -3062,10 +3072,12 @@ drawable notification_bg_low_pressed
 drawable notification_bg_normal
 drawable notification_bg_normal_pressed
 drawable notification_icon_background
+drawable notification_oversize_large_icon_bg
 drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable splashimage
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3241,10 +3253,12 @@ id easeOut
 id east
 id edge
 id edit_query
+id edit_text_id
 id elastic
 id embed
 id end
 id endToStart
+id end_button
 id enterAlways
 id enterAlwaysCollapsed
 id exitUntilCollapsed
@@ -3276,9 +3290,11 @@ id group_divider
 id grouping
 id groups
 id header_title
+id hide_ime_id
 id hideable
 id home
 id homeAsUp
+id home_image
 id honorRequest
 id horizontal_only
 id icon
@@ -3308,6 +3324,7 @@ id linear
 id listMode
 id list_item
 id m3_side_sheet
+id main
 id marquee
 id masked
 id match_constraint
@@ -3473,6 +3490,7 @@ id snapMargins
 id south
 id spacer
 id special_effects_controller_view_tag
+id splash_image
 id spline
 id split_action_bar
 id spread
@@ -3487,6 +3505,7 @@ id start
 id startHorizontal
 id startToEnd
 id startVertical
+id start_button
 id staticLayout
 id staticPostLayout
 id stop
@@ -3554,6 +3573,7 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id wander_sync_welcome
 id west
 id withText
 id with_icon
@@ -3677,7 +3697,9 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_login
 layout activity_main
+layout activity_splash
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
@@ -3694,6 +3716,8 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout ime_base_split_test_activity
+layout ime_secondary_split_test_activity
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -3794,6 +3818,13 @@ string bottomsheet_action_expand
 string bottomsheet_action_expand_halfway
 string bottomsheet_drag_handle_clicked
 string bottomsheet_drag_handle_content_description
+string call_notification_answer_action
+string call_notification_answer_video_action
+string call_notification_decline_action
+string call_notification_hang_up_action
+string call_notification_incoming_text
+string call_notification_ongoing_text
+string call_notification_screening_text
 string character_counter_content_description
 string character_counter_overflowed_content_description
 string character_counter_pattern
