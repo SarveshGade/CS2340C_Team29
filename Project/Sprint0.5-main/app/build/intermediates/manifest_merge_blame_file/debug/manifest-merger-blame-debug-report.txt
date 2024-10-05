@@ -44,7 +44,7 @@
 29-->/Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:13:9-51
 30        <activity
 30-->/Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:15:9-23:20
-31            android:name="com.example.sprintproject.MainActivity"
+31            android:name="com.example.sprintproject.view.MainActivity"
 31-->/Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:16:13-41
 32            android:exported="true" >
 32-->/Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:17:13-36
