@@ -28,7 +28,7 @@
         android:testOnly="true"
         android:theme="@style/Theme.SprintProject" >
         <activity
-            android:name="com.example.sprintproject.MainActivity"
+            android:name="com.example.sprintproject.view.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
