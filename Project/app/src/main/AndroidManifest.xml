@@ -20,7 +20,6 @@
             android:label="@string/title_activity_bottom_nav" />
         <activity
 
-            android:name=".splashActivity"
 
             android:name=".view.RegisterActivity"
             android:exported="false" />

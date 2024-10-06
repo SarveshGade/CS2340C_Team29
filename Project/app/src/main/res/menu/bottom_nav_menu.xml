@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_location"
+        android:id="@+id/secondFragment"
         android:icon="@drawable/ic_location"
-        android:title="Location" />
+        android:title="Destination" />
     <item
-        android:id="@+id/navigation_dining"
+        android:id="@+id/thirdFragment"
         android:icon="@drawable/ic_dining"
         android:title="Dining" />
     <item
-        android:id="@+id/navigation_accomodation"
+        android:id="@+id/fourthFragment"
         android:icon="@drawable/ic_hotel"
         android:title="Accommodations" />
     <item
-        android:id="@+id/navigation_logistics"
+        android:id="@+id/fifthFragment"
         android:icon="@drawable/ic_logistics"
         android:title="Logistics" />
     <item
-        android:id="@+id/navigation_forum"
+        android:id="@+id/sixthFragment"
         android:icon="@drawable/ic_travel_forum"
-        android:title="Travel Forum" />
+        android:title="Travel Community" />
 </menu>
