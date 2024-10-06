@@ -96,7 +96,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/tanmay/.gradle/cache
 		ADDED from /Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:13:9-51
 	android:dataExtractionRules
 		ADDED from /Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:7:9-65
-activity#com.example.sprintproject.MainActivity
+activity#com.example.sprintproject.view.MainActivity
 ADDED from /Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:15:9-23:20
 	android:exported
 		ADDED from /Users/tanmay/Code/Classes/CS 2340/Sprint 0.5/CS2340C_Team29/Project/Sprint0.5-main/app/src/main/AndroidManifest.xml:17:13-36
