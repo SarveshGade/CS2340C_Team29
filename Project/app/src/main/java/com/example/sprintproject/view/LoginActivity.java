@@ -1,4 +1,4 @@
-package com.example.sprintproject;
+package com.example.sprintproject.view;
 
 import android.os.Bundle;
 
@@ -8,7 +8,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class loginActivity extends AppCompatActivity {
+import com.example.sprintproject.R;
+
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
