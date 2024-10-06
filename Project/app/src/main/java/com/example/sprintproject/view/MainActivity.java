@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.sprintproject.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 finish();
             }
         });
