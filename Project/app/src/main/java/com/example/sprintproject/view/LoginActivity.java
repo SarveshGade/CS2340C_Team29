@@ -62,6 +62,15 @@ public class LoginActivity extends AppCompatActivity {
                 String user = String.valueOf(editTextUser.getText());
                 String password = String.valueOf(editTextPassword.getText());
 
+                if (user.isEmpty()) {
+                    editTextUser.setError("Email cannot be empty");
+                    return;
+                }
+                if (password.isEmpty()) {
+                    editTextPassword.setError("Password cannot be empty");
+                    return;
+                }
+
                 mAuth.signInWithEmailAndPassword(user, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
