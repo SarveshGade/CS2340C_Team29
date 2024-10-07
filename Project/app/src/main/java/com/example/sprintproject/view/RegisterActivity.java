@@ -98,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (success) {
                 Toast.makeText(RegisterActivity.this, "Account created successfully!",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LogisticsActivity.class);
                 startActivity(intent);
             }
             progressBar.setVisibility(View.GONE);

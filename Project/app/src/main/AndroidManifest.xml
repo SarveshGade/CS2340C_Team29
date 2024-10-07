@@ -13,6 +13,21 @@
         android:theme="@style/Theme.SprintProject"
         tools:targetApi="31">
         <activity
+            android:name=".view.LogisticsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ForumActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.AccommodationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.DiningActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.LocationActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.RegisterActivity"
             android:exported="false" />
         <activity

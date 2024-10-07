@@ -9,4 +9,14 @@
     <string name="click_to_register">Click to Register</string>
     <string name="quit">Quit</string>
     <string name="start">Start</string>
+    <string name="destination">Destination</string>
+    <string name="logistics">Logistics</string>
+    <string name="dining">Dining</string>
+    <string name="accommodations">Accommodations</string>
+    <string name="community">Community</string>
+    <string name="welcome_to_the_location_screen">Welcome to the Location Screen</string>
+    <string name="welcome_to_the_forum">Welcome to the Forum</string>
+    <string name="dining_screen">Dining Screen</string>
+    <string name="welcome_to_logistics">Welcome to Logistics</string>
+    <string name="welcome_to_accommodations">Welcome to Accommodations</string>
 </resources>
