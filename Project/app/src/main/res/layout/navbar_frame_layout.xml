@@ -25,19 +25,19 @@
 
 
         <ImageButton
-            android:id="@+id/destinationButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/locationButton"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_location"
-            android:contentDescription="@string/destination" />
+            android:contentDescription="@string/destination"
+            android:layout_height="40dp"
+            android:layout_width="40dp"/>
 
 
         <ImageButton
             android:id="@+id/diningButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_dining"
@@ -46,8 +46,8 @@
 
         <ImageButton
             android:id="@+id/accommodationsButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_accommodations"
@@ -55,9 +55,9 @@
 
 
         <ImageButton
-            android:id="@+id/communityButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/forumButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_community"

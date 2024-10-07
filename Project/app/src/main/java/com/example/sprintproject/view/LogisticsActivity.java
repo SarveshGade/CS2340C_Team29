@@ -36,10 +36,10 @@ public class LogisticsActivity extends AppCompatActivity {
 
         
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
-        ImageButton destinationButton = findViewById(R.id.destinationButton);
+        ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
         ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
-        ImageButton communityButton = findViewById(R.id.communityButton);
+        ImageButton forumButton = findViewById(R.id.forumButton);
 
         logisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,7 @@ public class LogisticsActivity extends AppCompatActivity {
             }
         });
 
-        destinationButton.setOnClickListener(new View.OnClickListener() {
+        locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LogisticsActivity.this, LocationActivity.class);
@@ -73,7 +73,7 @@ public class LogisticsActivity extends AppCompatActivity {
             }
         });
 
-        communityButton.setOnClickListener(new View.OnClickListener() {
+        forumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LogisticsActivity.this, ForumActivity.class);
