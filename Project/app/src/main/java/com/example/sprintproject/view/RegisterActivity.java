@@ -2,6 +2,7 @@ package com.example.sprintproject.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -21,6 +22,9 @@ import com.example.sprintproject.R;
 import com.example.sprintproject.model.User;
 import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -75,6 +79,16 @@ public class RegisterActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 return;
             }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                editTextEmail.setError("Not a valid email");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (!containsDigit(password)) {
+                editTextPassword.setError("Password should contain a digit for added security");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
 
             User newUser = new User(email, password);
             registerViewModel.register(newUser);
@@ -96,5 +110,10 @@ public class RegisterActivity extends AppCompatActivity {
             }
             progressBar.setVisibility(View.GONE);
         });
+    }
+    public boolean containsDigit(String password) {
+        Pattern pattern = Pattern.compile(".*\\d.*");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }

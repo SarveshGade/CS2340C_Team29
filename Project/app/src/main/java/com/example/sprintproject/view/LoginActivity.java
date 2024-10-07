@@ -2,6 +2,7 @@ package com.example.sprintproject.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -67,6 +68,11 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (password.isEmpty()) {
                 editTextPassword.setError("Password cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
+                editTextUser.setError("Not a valid email");
                 progressBar.setVisibility(View.GONE);
                 return;
             }
