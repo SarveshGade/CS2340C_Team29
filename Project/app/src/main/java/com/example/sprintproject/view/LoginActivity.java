@@ -14,85 +14,81 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.sprintproject.model.User;
+import com.example.sprintproject.viewmodel.LoginViewModel;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    TextInputEditText editTextUser, editTextPassword;
-    Button logButton;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+    private TextInputEditText editTextUser, editTextPassword;
+    private Button logButton;
+    private ProgressBar progressBar;
+    private TextView textView;
+    private LoginViewModel loginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        mAuth = FirebaseAuth.getInstance();
+
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
         editTextUser = findViewById(R.id.user);
         editTextPassword = findViewById(R.id.password);
         logButton = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.progress_bar);
         textView = findViewById(R.id.register_now);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-//                finish();
-            }
+
+        textView.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
-        logButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                String user = String.valueOf(editTextUser.getText());
-                String password = String.valueOf(editTextPassword.getText());
+        logButton.setOnClickListener(view -> {
+            progressBar.setVisibility(View.VISIBLE);
+            String user = String.valueOf(editTextUser.getText());
+            String password = String.valueOf(editTextPassword.getText());
 
-                if (user.isEmpty()) {
-                    editTextUser.setError("Email cannot be empty");
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                if (password.isEmpty()) {
-                    editTextPassword.setError("Password cannot be empty");
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-
-                mAuth.signInWithEmailAndPassword(user, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Logged In!",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-
-                                }
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
+            if (user.isEmpty()) {
+                editTextUser.setError("Email cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
             }
+            if (password.isEmpty()) {
+                editTextPassword.setError("Password cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            User loginUser = new User(user, password);
+            loginViewModel.login(loginUser);
+        });
+
+        loginViewModel.getLoginSuccess().observe(this, success -> {
+            if (success) {
+                Toast.makeText(LoginActivity.this, "Successfully logged In!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+            progressBar.setVisibility(View.GONE);
+        });
+
+        loginViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+            progressBar.setVisibility(View.GONE);
         });
     }
-
-
 }
