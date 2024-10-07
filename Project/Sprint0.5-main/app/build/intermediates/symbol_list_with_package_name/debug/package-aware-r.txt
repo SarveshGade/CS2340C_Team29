@@ -2068,6 +2068,7 @@ color mtrl_textinput_focused_box_stroke_color
 color mtrl_textinput_hovered_box_stroke_color
 color notification_action_color_filter
 color notification_icon_bg_color
+color orange
 color primary_dark_material_dark
 color primary_dark_material_light
 color primary_material_dark
@@ -3066,9 +3067,11 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable splash_image
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
+font montserrat
 id ALT
 id BOTTOM_END
 id BOTTOM_START
@@ -3245,6 +3248,7 @@ id elastic
 id embed
 id end
 id endToStart
+id end_button
 id enterAlways
 id enterAlwaysCollapsed
 id exitUntilCollapsed
@@ -3279,6 +3283,7 @@ id header_title
 id hideable
 id home
 id homeAsUp
+id home_image
 id honorRequest
 id horizontal_only
 id icon
@@ -3308,6 +3313,7 @@ id linear
 id listMode
 id list_item
 id m3_side_sheet
+id main
 id marquee
 id masked
 id match_constraint
@@ -3473,6 +3479,7 @@ id snapMargins
 id south
 id spacer
 id special_effects_controller_view_tag
+id splash_image
 id spline
 id split_action_bar
 id spread
@@ -3487,6 +3494,7 @@ id start
 id startHorizontal
 id startToEnd
 id startVertical
+id start_button
 id staticLayout
 id staticPostLayout
 id stop
@@ -3554,6 +3562,8 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id wander_sync_text
+id wander_sync_welcome
 id west
 id withText
 id with_icon
@@ -3677,7 +3687,9 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_login
 layout activity_main
+layout activity_splash
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
