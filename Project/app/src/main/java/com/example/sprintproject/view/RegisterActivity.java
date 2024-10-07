@@ -14,75 +14,87 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.sprintproject.model.User;
+import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
-    Button regButton;
-    FirebaseAuth mAuth;
-    ProgressBar progressBar;
-    TextView textView;
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button regButton;
+    private ProgressBar progressBar;
+    private TextView textView;
+    private RegisterViewModel registerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        FirebaseApp.initializeApp(this);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        mAuth = FirebaseAuth.getInstance();
+
+        registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         regButton = findViewById(R.id.register_button);
         progressBar = findViewById(R.id.progress_bar);
         textView = findViewById(R.id.login_now);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-//                finish();
-            }
+
+        textView.setOnClickListener(view -> {
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
-        regButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                String email = String.valueOf(editTextEmail.getText());
-                String password = String.valueOf(editTextPassword.getText());
+        regButton.setOnClickListener(view -> {
+            progressBar.setVisibility(View.VISIBLE);
+            String email = String.valueOf(editTextEmail.getText());
+            String password = String.valueOf(editTextPassword.getText());
 
-
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "Account created successfully.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
+            if (email.isEmpty()) {
+                editTextEmail.setError("Email cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
             }
+            if (password.isEmpty()) {
+                editTextPassword.setError("Password cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (password.length() < 6) {
+                editTextPassword.setError("Password cannot be less than 6 characters");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            User newUser = new User(email, password);
+            registerViewModel.register(newUser);
+        });
+
+        registerViewModel.getRegistrationSuccess().observe(this, success -> {
+            if (success) {
+                Toast.makeText(RegisterActivity.this, "Account created successfully!",
+                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+            progressBar.setVisibility(View.GONE);
+        });
+
+        registerViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+            progressBar.setVisibility(View.GONE);
         });
     }
 }
