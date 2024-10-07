@@ -64,10 +64,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (user.isEmpty()) {
                     editTextUser.setError("Email cannot be empty");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
                 if (password.isEmpty()) {
                     editTextPassword.setError("Password cannot be empty");
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
 
@@ -83,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Authentication failed.",
                                             Toast.LENGTH_SHORT).show();
+
                                 }
                                 progressBar.setVisibility(View.GONE);
                             }

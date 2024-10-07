@@ -65,6 +65,21 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = String.valueOf(editTextEmail.getText());
                 String password = String.valueOf(editTextPassword.getText());
 
+                if (email.isEmpty()) {
+                    editTextEmail.setError("Email cannot be empty");
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+                if (password.isEmpty()) {
+                    editTextPassword.setError("Password cannot be empty");
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+                if (password.length() < 6) {
+                    editTextPassword.setError("Password cannot be less than 6 characters");
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
 
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
