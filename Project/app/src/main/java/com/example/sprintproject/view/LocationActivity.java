@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.sprintproject.R;
 
@@ -26,15 +27,12 @@ public class LocationActivity extends AppCompatActivity {
             return insets;
         });
 
-
-
-
-
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
         ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
         ImageButton forumButton = findViewById(R.id.forumButton);
+
 
         logisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
