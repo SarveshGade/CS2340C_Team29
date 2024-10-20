@@ -65,6 +65,18 @@ public class Project {
         return teamMembers;
     }
 
+    public Task createTask(String title, String description, String dueDate, String status, String priority) {
+        Task newTask = new Task(title, description, dueDate, status, priority);
+        this.tasks.add(newTask); //Automatically add task to current project
+        return newTask;
+    }
+
+    public TeamMember createTeamMember(String name, String email) {
+        TeamMember newMember = new TeamMember(name, email);
+        this.teamMembers.add(newMember);  //Automatically add team member to current porject
+        return newMember;
+    }
+
     public void addTask(Task toAdd) {
         tasks.add(toAdd);
     }
