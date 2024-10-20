@@ -6,6 +6,6 @@ public class HighPriorityTask extends Task {
 
     @Override
     public void doTask() {
-        System.out.println("This is a high priority task that must be run immediately");
+        System.out.println("This is a high priority task that must be run immediately!");
     }
 }

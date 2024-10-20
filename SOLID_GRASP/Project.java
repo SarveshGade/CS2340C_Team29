@@ -25,6 +25,46 @@ public class Project {
         this(name, description, startDate, endDate, new ArrayList<TeamMember>(), new ArrayList<Task>());
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
+    }
+
     public void addTask(Task toAdd) {
         tasks.add(toAdd);
     }
@@ -47,9 +87,5 @@ public class Project {
         } else {
             throw new NoSuchElementException("Team member not found");
         }
-    }
-
-    public List<TeamMember> getTeamMembers() {
-        return teamMembers;
     }
 }
