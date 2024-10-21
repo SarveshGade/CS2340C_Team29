@@ -25,10 +25,9 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextInputEditText editTextUser, editTextPassword;
-    private Button logButton;
+    private TextInputEditText editTextUser;
+    private TextInputEditText editTextPassword;
     private ProgressBar progressBar;
-    private TextView textView;
     private LoginViewModel loginViewModel;
 
     @Override
@@ -47,9 +46,9 @@ public class LoginActivity extends AppCompatActivity {
 
         editTextUser = findViewById(R.id.user);
         editTextPassword = findViewById(R.id.password);
-        logButton = findViewById(R.id.login_button);
+        Button logButton = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.progress_bar);
-        textView = findViewById(R.id.register_now);
+        TextView textView = findViewById(R.id.register_now);
 
         textView.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
