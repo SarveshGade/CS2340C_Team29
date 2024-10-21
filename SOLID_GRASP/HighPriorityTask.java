@@ -1,5 +1,3 @@
-import org.activity;
-
 public class HighPriorityTask extends Task {
 
     public HighPriorityTask(String name, String description, String dueDate, String status, String priority) {
