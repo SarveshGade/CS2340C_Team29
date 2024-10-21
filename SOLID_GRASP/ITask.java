@@ -1,4 +1,4 @@
-package com.interfaces.activity;
+package org.activity;
 
 public interface ITask {
     void doTask();

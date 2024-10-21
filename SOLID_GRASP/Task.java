@@ -1,4 +1,4 @@
-import com.interfaces.activity;
+import org.activity;
 
 public class Task implements ITask {
 
