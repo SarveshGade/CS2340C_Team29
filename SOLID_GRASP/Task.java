@@ -1,3 +1,5 @@
+import com.interfaces.activity;
+
 public class Task implements ITask {
 
     protected String title;
