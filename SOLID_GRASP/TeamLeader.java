@@ -1,5 +1,4 @@
 import java.util.List;
-import org.activity;
 
 public class TeamLeader extends TeamMember implements ILeader {
     private Project project;

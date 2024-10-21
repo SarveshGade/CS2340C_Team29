@@ -1,5 +1,3 @@
-import org.activity;
-
 public class Task implements ITask {
 
     protected String title;

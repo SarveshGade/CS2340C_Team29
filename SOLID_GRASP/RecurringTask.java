@@ -1,5 +1,3 @@
-import org.activity;
-
 public class RecurringTask extends Task {
     private int frequency;
 
