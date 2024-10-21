@@ -28,10 +28,9 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText editTextEmail, editTextPassword;
-    private Button regButton;
+    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextPassword;
     private ProgressBar progressBar;
-    private TextView textView;
     private RegisterViewModel registerViewModel;
 
     @Override
@@ -50,9 +49,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
-        regButton = findViewById(R.id.register_button);
+        Button regButton = findViewById(R.id.register_button);
         progressBar = findViewById(R.id.progress_bar);
-        textView = findViewById(R.id.login_now);
+        TextView textView = findViewById(R.id.login_now);
 
         textView.setOnClickListener(view -> {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

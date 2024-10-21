@@ -1,3 +1,5 @@
+import com.interfaces.activity;
+
 public class RecurringTask extends Task {
     private int frequency;
 
