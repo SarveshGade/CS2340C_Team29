@@ -29,7 +29,7 @@ public class DiningActivity extends AppCompatActivity {
 
 
 
-        ImageButton addContributorButton = findViewById(R.id.addContributor);
+
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
