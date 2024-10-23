@@ -14,9 +14,9 @@
     <string name="dining">Dining</string>
     <string name="accommodations">Accommodations</string>
     <string name="community">Community</string>
-    <string name="welcome_to_the_location_screen">Welcome to the Location Screen</string>
-    <string name="welcome_to_the_forum">Welcome to the Forum</string>
-    <string name="dining_screen">Dining Screen</string>
+    <string name="welcome_to_the_location_screen">Welcome to Location</string>
+    <string name="welcome_to_the_forum">Welcome to Forum</string>
+    <string name="dining_screen">Welcome to Dining</string>
     <string name="welcome_to_logistics">Welcome to Logistics</string>
     <string name="welcome_to_accommodations">Welcome to Accommodations</string>
 </resources>
