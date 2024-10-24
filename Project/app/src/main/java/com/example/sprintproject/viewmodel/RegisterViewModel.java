@@ -1,19 +1,19 @@
 package com.example.sprintproject.viewmodel;
 
 import android.app.Application;
-import android.content.Intent;
+//import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.sprintproject.model.User;
-import com.example.sprintproject.view.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+//import com.example.sprintproject.view.MainActivity;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+//import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -65,7 +65,7 @@ public class RegisterViewModel extends AndroidViewModel {
                 });
     }
 
-    private void addUserToFirestore(String userId,User user) {
+    private void addUserToFirestore(String userId, User user) {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", user.getEmail());
         userMap.put("password", user.getPassword());
