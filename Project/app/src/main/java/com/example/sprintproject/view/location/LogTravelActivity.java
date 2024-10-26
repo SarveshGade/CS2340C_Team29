@@ -1,4 +1,4 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.location;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;

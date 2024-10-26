@@ -1,9 +1,6 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.logistics;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,14 +9,26 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
+import com.example.sprintproject.view.dining.DiningActivity;
+import com.example.sprintproject.view.forum.ForumActivity;
+import com.example.sprintproject.view.location.LocationActivity;
 
-public class ForumActivity extends AppCompatActivity {
+import android.content.Intent;
+
+import android.view.View;
+import android.widget.ImageButton;
+
+
+
+
+public class LogisticsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_forum);
+        setContentView(R.layout.activity_logistics);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -29,7 +38,7 @@ public class ForumActivity extends AppCompatActivity {
 
 
 
-
+        
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
@@ -39,7 +48,7 @@ public class ForumActivity extends AppCompatActivity {
         logisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForumActivity.this, LogisticsActivity.class);
+                Intent intent = new Intent(LogisticsActivity.this, LogisticsActivity.class);
                 startActivity(intent);
             }
         });
@@ -47,7 +56,7 @@ public class ForumActivity extends AppCompatActivity {
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForumActivity.this, LocationActivity.class);
+                Intent intent = new Intent(LogisticsActivity.this, LocationActivity.class);
                 startActivity(intent);
             }
         });
@@ -55,7 +64,7 @@ public class ForumActivity extends AppCompatActivity {
         diningButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForumActivity.this, DiningActivity.class);
+                Intent intent = new Intent(LogisticsActivity.this, DiningActivity.class);
                 startActivity(intent);
             }
         });
@@ -63,7 +72,7 @@ public class ForumActivity extends AppCompatActivity {
         accommodationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForumActivity.this, AccommodationsActivity.class);
+                Intent intent = new Intent(LogisticsActivity.this, AccommodationsActivity.class);
                 startActivity(intent);
             }
         });
@@ -71,7 +80,7 @@ public class ForumActivity extends AppCompatActivity {
         forumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
+                Intent intent = new Intent(LogisticsActivity.this, ForumActivity.class);
                 startActivity(intent);
             }
         });
