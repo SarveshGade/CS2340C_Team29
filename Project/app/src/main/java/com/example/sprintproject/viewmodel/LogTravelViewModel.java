@@ -24,6 +24,7 @@ public class LogTravelViewModel extends ViewModel {
         if (validationMessage.isEmpty()) {
             Destination destination = new Destination(location, startDate, endDate);
             destinationLiveData.setValue(destination);
+            destination.saveToFirestore();
             errorMessageLiveData.setValue(null); // Clear any previous error message
         } else {
             errorMessageLiveData.setValue(validationMessage);
@@ -43,4 +44,5 @@ public class LogTravelViewModel extends ViewModel {
         }
         return ""; // All valid inputs
     }
+
 }

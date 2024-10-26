@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Destination {
     private String location;
@@ -76,5 +77,15 @@ public class Destination {
         } catch (ParseException e) {
             return false;
         }
+    }
+
+    public void saveToFirestore() {
+        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
+        firestore.collection("destinations")
+                .add(this)
+                .addOnSuccessListener(documentReference ->
+                        System.out.println("Destination saved with ID: " + documentReference.getId()))
+                .addOnFailureListener(e ->
+                        System.err.println("Error saving destination: " + e.getMessage()));
     }
 }
