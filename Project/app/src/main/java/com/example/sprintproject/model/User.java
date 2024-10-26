@@ -33,7 +33,7 @@ public class User {
     }
 
     public void addUserToFirestore(String userInfo) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirestoreManager.getInstance().getFirestore();
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
 
