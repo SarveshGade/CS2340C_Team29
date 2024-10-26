@@ -1,6 +1,7 @@
 package com.example.sprintproject.viewmodel;
 
 import android.app.Application;
+import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -36,5 +37,23 @@ public class LoginViewModel extends AndroidViewModel {
                         errorMessage.setValue("Authentication failed.");
                     }
                 });
+    }
+
+    // Validation methods
+    public String validateEmail(String email) {
+        if (email.isEmpty()) {
+            return "Email cannot be empty";
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return "Not a valid email";
+        }
+        return null;
+    }
+
+    public String validatePassword(String password) {
+        if (password.isEmpty()) {
+            return "Password cannot be empty";
+        }
+        return null;
     }
 }
