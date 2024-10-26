@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.sprintproject.R;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.sprintproject.view.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
     @Override

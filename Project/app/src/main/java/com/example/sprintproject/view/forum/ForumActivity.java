@@ -1,6 +1,9 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.forum;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,22 +12,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.view.location.LocationActivity;
+import com.example.sprintproject.view.logistics.LogisticsActivity;
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
+import com.example.sprintproject.view.dining.DiningActivity;
 
-import android.content.Intent;
-
-import android.view.View;
-import android.widget.ImageButton;
-
-
-
-
-public class LogisticsActivity extends AppCompatActivity {
+public class ForumActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_logistics);
+        setContentView(R.layout.activity_forum);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -34,7 +33,7 @@ public class LogisticsActivity extends AppCompatActivity {
 
 
 
-        
+
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
@@ -44,7 +43,7 @@ public class LogisticsActivity extends AppCompatActivity {
         logisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, LogisticsActivity.class);
+                Intent intent = new Intent(ForumActivity.this, LogisticsActivity.class);
                 startActivity(intent);
             }
         });
@@ -52,7 +51,7 @@ public class LogisticsActivity extends AppCompatActivity {
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, LocationActivity.class);
+                Intent intent = new Intent(ForumActivity.this, LocationActivity.class);
                 startActivity(intent);
             }
         });
@@ -60,7 +59,7 @@ public class LogisticsActivity extends AppCompatActivity {
         diningButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, DiningActivity.class);
+                Intent intent = new Intent(ForumActivity.this, DiningActivity.class);
                 startActivity(intent);
             }
         });
@@ -68,7 +67,7 @@ public class LogisticsActivity extends AppCompatActivity {
         accommodationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, AccommodationsActivity.class);
+                Intent intent = new Intent(ForumActivity.this, AccommodationsActivity.class);
                 startActivity(intent);
             }
         });
@@ -76,7 +75,7 @@ public class LogisticsActivity extends AppCompatActivity {
         forumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, ForumActivity.class);
+                Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
                 startActivity(intent);
             }
         });
