@@ -103,20 +103,33 @@ public class LocationActivity extends AppCompatActivity {
                     return;
                 }
 
-                // calculate the missing value based on the provided inputs
+                // calculate the missing value based on the provided inputs and update firestore database
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 try {
                     if (!startDate.isEmpty() && !endDate.isEmpty()) {
                         // dates are provided, calculate duration
                         duration = calculateDuration(startDate, endDate);
                         // Log.d("CalculateDialog", "Calculated Duration: " + duration);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else if (!startDate.isEmpty() && duration != null) {
                         // calculate endDate based on startDate and duration
                         endDate = calculateEndDate(startDate, duration);
                         // Log.d("CalculateDialog", "Calculated EndDate: " + endDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else if (!endDate.isEmpty() && duration != null) {
                         // calculate startDate based on endDate and duration
                         startDate = calculateStartDate(endDate, duration);
                         // Log.d("CalculateDialog", "Calculated StartDate: " + startDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else {
                         // Log.d("CalculateDialog", "Insufficient data to calculate a missing value.");
                         android.widget.Toast.makeText(LocationActivity.this, "Please enter two out of the three values!", android.widget.Toast.LENGTH_LONG).show();
