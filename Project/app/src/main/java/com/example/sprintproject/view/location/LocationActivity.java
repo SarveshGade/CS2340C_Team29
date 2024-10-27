@@ -15,14 +15,23 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.model.FirestoreManager;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocationActivity extends AppCompatActivity {
     private LinearLayout destinationContainer;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +52,9 @@ public class LocationActivity extends AppCompatActivity {
 
         Button logTravelButton = findViewById(R.id.logTravelButton);
         Button calculateDays = findViewById(R.id.calculateVacationTime);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirestoreManager.getInstance().getFirestore();
 
         calculateDays.setOnClickListener(v -> {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(LocationActivity.this);
@@ -91,20 +103,33 @@ public class LocationActivity extends AppCompatActivity {
                     return;
                 }
 
-                // calculate the missing value based on the provided inputs
+                // calculate the missing value based on the provided inputs and update firestore database
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 try {
                     if (!startDate.isEmpty() && !endDate.isEmpty()) {
                         // dates are provided, calculate duration
                         duration = calculateDuration(startDate, endDate);
                         // Log.d("CalculateDialog", "Calculated Duration: " + duration);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else if (!startDate.isEmpty() && duration != null) {
                         // calculate endDate based on startDate and duration
                         endDate = calculateEndDate(startDate, duration);
                         // Log.d("CalculateDialog", "Calculated EndDate: " + endDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else if (!endDate.isEmpty() && duration != null) {
                         // calculate startDate based on endDate and duration
                         startDate = calculateStartDate(endDate, duration);
                         // Log.d("CalculateDialog", "Calculated StartDate: " + startDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
                     } else {
                         // Log.d("CalculateDialog", "Insufficient data to calculate a missing value.");
                         android.widget.Toast.makeText(LocationActivity.this, "Please enter two out of the three values!", android.widget.Toast.LENGTH_LONG).show();
@@ -178,6 +203,27 @@ public class LocationActivity extends AppCompatActivity {
         calendar.add(java.util.Calendar.DAY_OF_YEAR, -duration);
         return sdf.format(calendar.getTime());
     }
+    public void updateUserData(String userId, String startDate, String endDate, int totalAllocatedDays) {
 
+        // Create a map to hold the fields you want to update
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("startDate", startDate);
+        updates.put("endDate", endDate);
+        updates.put("totalAllocatedDays", totalAllocatedDays);
+
+        // Update the document with the given ID
+        db.collection("Users")
+                .document(userId)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> {
+                    // Successfully updated
+                    Log.d("Firestore", "User data updated successfully.");
+
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                    Log.w("Firestore", "Error updating user data", e);
+                });
+    }
 
 }
