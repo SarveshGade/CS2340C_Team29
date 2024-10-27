@@ -1,6 +1,7 @@
 package com.example.sprintproject.view.location;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ public class LogTravelActivity extends AppCompatActivity {
     private EditText startDateEditText;
     private EditText endDateEditText;
     private Button saveButton;
+    private Button backButton;
     private LogTravelViewModel viewModel;
 
     @Override
@@ -30,6 +32,7 @@ public class LogTravelActivity extends AppCompatActivity {
         startDateEditText = findViewById(R.id.startDateEditText);
         endDateEditText = findViewById(R.id.endDateEditText);
         saveButton = findViewById(R.id.saveButton);
+        backButton = findViewById(R.id.backButton);
 
         startDateEditText.setOnClickListener(v -> showDatePickerDialog(startDateEditText));
         endDateEditText.setOnClickListener(v -> showDatePickerDialog(endDateEditText));
@@ -50,6 +53,11 @@ public class LogTravelActivity extends AppCompatActivity {
             if (errorMessage != null) {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             }
+        });
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(LogTravelActivity.this, LocationActivity.class);
+            startActivity(intent);
         });
     }
 

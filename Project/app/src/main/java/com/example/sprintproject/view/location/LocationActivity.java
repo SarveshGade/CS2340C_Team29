@@ -61,9 +61,9 @@ public class LocationActivity extends AppCompatActivity {
             layout.addView(endDateInput);
 
             //  the optional destination input
-            final android.widget.EditText destinationInput = new android.widget.EditText(LocationActivity.this);
-            destinationInput.setHint("Destination (Optional)");
-            layout.addView(destinationInput);
+            final android.widget.EditText durationInput = new android.widget.EditText(LocationActivity.this);
+            durationInput.setHint("Duration (in days)");
+            layout.addView(durationInput);
 
             // Set the layout to the dialog
             builder.setView(layout);
@@ -73,8 +73,9 @@ public class LocationActivity extends AppCompatActivity {
                 // Retrieve the start and end dates
                 String startDate = startDateInput.getText().toString().trim();
                 String endDate = endDateInput.getText().toString().trim();
+                int duration = Integer.parseInt(durationInput.getText().toString().trim());
 
-                // Validate the dates
+                // Validate the dates (if both are not empty)
                 if (!startDate.isEmpty() && !endDate.isEmpty()) {
                     try {
                         // Parse the dates using SimpleDateFormat
@@ -86,10 +87,8 @@ public class LocationActivity extends AppCompatActivity {
                         long differenceInMillis = end.getTime() - start.getTime();
 
                         // Convert milliseconds to days
-                        long daysBetween = differenceInMillis / (1000 * 60 * 60 * 24);
-
-                        // Show the result
-                        android.widget.Toast.makeText(LocationActivity.this, "Days between: " + daysBetween, android.widget.Toast.LENGTH_LONG).show();
+                        duration = (int) differenceInMillis / (1000 * 60 * 60 * 24);
+                        // save result to user database here
                     } catch (java.text.ParseException e) {
                         android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
                     }
