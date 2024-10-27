@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.User;
+import com.example.sprintproject.model.BaseUser;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.LoginViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -64,8 +64,8 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            User loginUser = new User(user, password);
-            loginViewModel.login(loginUser);
+            BaseUser loginBaseUser = new BaseUser(user, password);
+            loginViewModel.login(loginBaseUser);
         });
 
         loginViewModel.getLoginSuccess().observe(this, success -> {

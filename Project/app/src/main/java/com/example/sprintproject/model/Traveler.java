@@ -9,44 +9,40 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User {
-    private String email;
-    private String password;
+public class Traveler extends BaseUser implements ITraveler {
     private String startDate;
     private String endDate;
     private int totalAllocatedDays;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static final String TAG = "UserModel"; // Tag for logging
+    private static final String TAG = "TravelerModel"; // Tag for logging
 
-    public User() {
-        // This constructor is intentionally empty.
-        // You can initialize default values here if needed.
-        this.email = ""; // Default email
-        this.password = ""; // Default password
-    }
-
-    public User(String email, String password, String startDate, String endDate) {
-        this.email = email;
-        this.password = password;
+    public Traveler(String email, String password, String startDate, String endDate) {
+        super(email, password);
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAllocatedDays = calculateTotalAllocatedDays();
     }
 
-    public User(String email, String password) {
-        this(email, password, "0", "0");
+    public Traveler(String email, String password) {
+        this(email, password, "N/A", "N/A");
     }
 
     public String getEmail() {
-        return email;
+        return super.getEmail();
     }
 
     public String getPassword() {
-        return password;
+        return super.getPassword();
     }
+
+    @Override
     public String getStartDate() { return startDate; }
+
+    @Override
     public String getEndDate() { return endDate; }
+
+    @Override
     public int getTotalAllocatedDays() { return totalAllocatedDays; }
 
     public void setStartDate(String startDate) {
@@ -59,17 +55,17 @@ public class User {
         this.totalAllocatedDays = totalAllocatedDays;
     }
 
-
-    public void addUserToFirestore(String userInfo) {
+    @Override
+    public void addTravelerToFirestore(String travelerInfo) {
         FirebaseFirestore db = FirestoreManager.getInstance().getFirestore();
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", email);
+        userMap.put("email", super.getEmail());
 
         db.collection("users")
-                .document(userInfo) // Use email as the document ID
+                .document(travelerInfo) // Use email as the document ID
                 .set(userMap)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "User added successfully");
+                    Log.d("Firestore", "BaseUser added successfully");
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error adding user", e);

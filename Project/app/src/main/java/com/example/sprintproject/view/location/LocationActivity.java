@@ -217,7 +217,7 @@ public class LocationActivity extends AppCompatActivity {
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
                     // Successfully updated
-                    Log.d("Firestore", "User data updated successfully.");
+                    Log.d("Firestore", "BaseUser data updated successfully.");
 
                 })
                 .addOnFailureListener(e -> {

@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.User;
+import com.example.sprintproject.model.BaseUser;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -88,8 +88,8 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            User newUser = new User(email, password);
-            registerViewModel.register(newUser);
+            BaseUser newBaseUser = new BaseUser(email, password);
+            registerViewModel.register(newBaseUser);
         });
 
         registerViewModel.getRegistrationSuccess().observe(this, success -> {
