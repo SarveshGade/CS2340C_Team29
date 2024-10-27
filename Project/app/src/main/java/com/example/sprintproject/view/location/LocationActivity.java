@@ -3,6 +3,7 @@ package com.example.sprintproject.view.location;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
+
 
 public class LocationActivity extends AppCompatActivity {
     private LinearLayout destinationContainer;
@@ -65,37 +67,58 @@ public class LocationActivity extends AppCompatActivity {
             durationInput.setHint("Duration (in days)");
             layout.addView(durationInput);
 
-            // Set the layout to the dialog
+            // set the layout to the dialog
             builder.setView(layout);
 
-            // Add positive and negative buttons
+            // add positive and negative buttons
             builder.setPositiveButton("Calculate", (dialog, which) -> {
-                // Retrieve the start and end dates
+                // retrieve the start and end dates
                 String startDate = startDateInput.getText().toString().trim();
                 String endDate = endDateInput.getText().toString().trim();
-                int duration = Integer.parseInt(durationInput.getText().toString().trim());
+                String durationString = durationInput.getText().toString().trim();
+                Integer duration = null;
 
-                // Validate the dates (if both are not empty)
-                if (!startDate.isEmpty() && !endDate.isEmpty()) {
-                    try {
-                        // Parse the dates using SimpleDateFormat
-                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                        java.util.Date start = sdf.parse(startDate);
-                        java.util.Date end = sdf.parse(endDate);
+                // check if duration is not empty and parse it
+                if (!durationString.isEmpty()) {
+                    duration = Integer.parseInt(durationString);
+                }
+                // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
 
-                        // Calculate the difference in milliseconds
-                        long differenceInMillis = end.getTime() - start.getTime();
+                // validate the input
+                if (startDate.isEmpty() && endDate.isEmpty() && duration == null) {
+                    // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
+                    android.widget.Toast.makeText(LocationActivity.this, "Please fill in at least one value!", android.widget.Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                        // Convert milliseconds to days
-                        duration = (int) differenceInMillis / (1000 * 60 * 60 * 24);
-                        // save result to user database here
-                    } catch (java.text.ParseException e) {
-                        android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
+                // calculate the missing value based on the provided inputs
+                try {
+                    if (!startDate.isEmpty() && !endDate.isEmpty()) {
+                        // dates are provided, calculate duration
+                        duration = calculateDuration(startDate, endDate);
+                        // Log.d("CalculateDialog", "Calculated Duration: " + duration);
+                    } else if (!startDate.isEmpty() && duration != null) {
+                        // calculate endDate based on startDate and duration
+                        endDate = calculateEndDate(startDate, duration);
+                        // Log.d("CalculateDialog", "Calculated EndDate: " + endDate);
+                    } else if (!endDate.isEmpty() && duration != null) {
+                        // calculate startDate based on endDate and duration
+                        startDate = calculateStartDate(endDate, duration);
+                        // Log.d("CalculateDialog", "Calculated StartDate: " + startDate);
+                    } else {
+                        // Log.d("CalculateDialog", "Insufficient data to calculate a missing value.");
+                        android.widget.Toast.makeText(LocationActivity.this, "Please enter two out of the three values!", android.widget.Toast.LENGTH_LONG).show();
+                        return;
                     }
-                } else {
-                    android.widget.Toast.makeText(LocationActivity.this, "Please enter both start and end dates!", android.widget.Toast.LENGTH_LONG).show();
+                    // save to user here
+
+                } catch (java.text.ParseException e) {
+                    android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
+                } catch (NumberFormatException e) {
+                    android.widget.Toast.makeText(LocationActivity.this, "Invalid duration format!", android.widget.Toast.LENGTH_LONG).show();
                 }
             });
+
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
@@ -132,5 +155,29 @@ public class LocationActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    public static int calculateDuration(String startDate, String endDate) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date start = sdf.parse(startDate);
+        java.util.Date end = sdf.parse(endDate);
+        return (int) ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    public static String calculateEndDate(String startDate, int duration) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date start = sdf.parse(startDate);
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(start);
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, duration);
+        return sdf.format(calendar.getTime());
+    }
+    public static String calculateStartDate(String endDate, int duration) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date end = sdf.parse(endDate);
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, -duration);
+        return sdf.format(calendar.getTime());
+    }
+
 
 }
