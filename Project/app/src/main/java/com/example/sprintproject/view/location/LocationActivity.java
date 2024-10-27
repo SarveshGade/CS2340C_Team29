@@ -21,7 +21,6 @@ import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 
-import com.example.sprintproject.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -158,7 +157,6 @@ public class LocationActivity extends AppCompatActivity {
     }
     // Update method to save new dates and duration to Firestore
     public void updateUserData(String userId, String startDate, String endDate, int totalAllocatedDays) {
-        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
 
         // Create a map to hold the fields you want to update
         Map<String, Object> updates = new HashMap<>();
@@ -167,7 +165,7 @@ public class LocationActivity extends AppCompatActivity {
         updates.put("totalAllocatedDays", totalAllocatedDays);
 
         // Update the document with the given ID
-        firestore.collection("Users")
+        db.collection("Users")
                 .document(userId)
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
