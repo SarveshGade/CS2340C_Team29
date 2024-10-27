@@ -1,8 +1,7 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -10,25 +9,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.User;
+import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.LoginViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextInputEditText editTextUser, editTextPassword;
-    private Button logButton;
+    private TextInputEditText editTextUser;
+    private TextInputEditText editTextPassword;
     private ProgressBar progressBar;
-    private TextView textView;
     private LoginViewModel loginViewModel;
 
     @Override
@@ -37,19 +31,13 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
         editTextUser = findViewById(R.id.user);
         editTextPassword = findViewById(R.id.password);
-        logButton = findViewById(R.id.login_button);
+        Button logButton = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.progress_bar);
-        textView = findViewById(R.id.register_now);
+        TextView textView = findViewById(R.id.register_now);
 
         textView.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -61,18 +49,17 @@ public class LoginActivity extends AppCompatActivity {
             String user = String.valueOf(editTextUser.getText());
             String password = String.valueOf(editTextPassword.getText());
 
-            if (user.isEmpty()) {
-                editTextUser.setError("Email cannot be empty");
+            // Validate inputs using ViewModel methods
+            String emailError = loginViewModel.validateEmail(user);
+            if (emailError != null) {
+                editTextUser.setError(emailError);
                 progressBar.setVisibility(View.GONE);
                 return;
             }
-            if (password.isEmpty()) {
-                editTextPassword.setError("Password cannot be empty");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
-                editTextUser.setError("Not a valid email");
+
+            String passwordError = loginViewModel.validatePassword(password);
+            if (passwordError != null) {
+                editTextPassword.setError(passwordError);
                 progressBar.setVisibility(View.GONE);
                 return;
             }
@@ -98,3 +85,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
+

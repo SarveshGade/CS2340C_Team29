@@ -2,7 +2,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-
 public class Project {
 
     private String name;
@@ -22,7 +21,7 @@ public class Project {
     }
 
     public Project(String name, String description, String startDate, String endDate) {
-        this(name, description, startDate, endDate, new ArrayList<TeamMember>(), new ArrayList<Task>());
+        this(name, description, startDate, endDate, new ArrayList<>(), new ArrayList<Task>());
     }
 
     public String getDescription() {

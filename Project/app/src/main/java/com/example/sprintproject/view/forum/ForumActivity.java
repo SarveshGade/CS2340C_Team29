@@ -1,4 +1,4 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.forum;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,14 +12,18 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.view.location.LocationActivity;
+import com.example.sprintproject.view.logistics.LogisticsActivity;
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
+import com.example.sprintproject.view.dining.DiningActivity;
 
-public class DiningActivity extends AppCompatActivity {
+public class ForumActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_dining);
+        setContentView(R.layout.activity_forum);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -39,7 +43,7 @@ public class DiningActivity extends AppCompatActivity {
         logisticsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DiningActivity.this, LogisticsActivity.class);
+                Intent intent = new Intent(ForumActivity.this, LogisticsActivity.class);
                 startActivity(intent);
             }
         });
@@ -47,7 +51,7 @@ public class DiningActivity extends AppCompatActivity {
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DiningActivity.this, LocationActivity.class);
+                Intent intent = new Intent(ForumActivity.this, LocationActivity.class);
                 startActivity(intent);
             }
         });
@@ -55,7 +59,7 @@ public class DiningActivity extends AppCompatActivity {
         diningButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
+                Intent intent = new Intent(ForumActivity.this, DiningActivity.class);
                 startActivity(intent);
             }
         });
@@ -63,7 +67,7 @@ public class DiningActivity extends AppCompatActivity {
         accommodationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DiningActivity.this, AccommodationsActivity.class);
+                Intent intent = new Intent(ForumActivity.this, AccommodationsActivity.class);
                 startActivity(intent);
             }
         });
@@ -71,7 +75,7 @@ public class DiningActivity extends AppCompatActivity {
         forumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DiningActivity.this, ForumActivity.class);
+                Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
                 startActivity(intent);
             }
         });

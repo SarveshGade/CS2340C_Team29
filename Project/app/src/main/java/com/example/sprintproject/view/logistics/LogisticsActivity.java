@@ -1,4 +1,4 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.logistics;
 
 import android.os.Bundle;
 
@@ -9,6 +9,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
+import com.example.sprintproject.view.dining.DiningActivity;
+import com.example.sprintproject.view.forum.ForumActivity;
+import com.example.sprintproject.view.location.LocationActivity;
 
 import android.content.Intent;
 

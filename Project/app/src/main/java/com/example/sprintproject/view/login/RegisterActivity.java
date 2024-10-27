@@ -1,4 +1,4 @@
-package com.example.sprintproject.view;
+package com.example.sprintproject.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.User;
+import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -28,10 +27,9 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText editTextEmail, editTextPassword;
-    private Button regButton;
+    private TextInputEditText editTextEmail;
+    private TextInputEditText editTextPassword;
     private ProgressBar progressBar;
-    private TextView textView;
     private RegisterViewModel registerViewModel;
 
     @Override
@@ -50,9 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
-        regButton = findViewById(R.id.register_button);
+        Button regButton = findViewById(R.id.register_button);
         progressBar = findViewById(R.id.progress_bar);
-        textView = findViewById(R.id.login_now);
+        TextView textView = findViewById(R.id.login_now);
 
         textView.setOnClickListener(view -> {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
