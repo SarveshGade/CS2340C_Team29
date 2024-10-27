@@ -56,7 +56,6 @@ public class LocationActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirestoreManager.getInstance().getFirestore();
 
-
         calculateDays.setOnClickListener(v -> {
             android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(LocationActivity.this);
             builder.setTitle("Calculate Vacation Time");
@@ -80,45 +79,71 @@ public class LocationActivity extends AppCompatActivity {
             durationInput.setHint("Duration (in days)");
             layout.addView(durationInput);
 
-            // Set the layout to the dialog
+            // set the layout to the dialog
             builder.setView(layout);
 
-            // Add positive and negative buttons
+            // add positive and negative buttons
             builder.setPositiveButton("Calculate", (dialog, which) -> {
-                // Retrieve the start and end dates
+                // retrieve the start and end dates
                 String startDate = startDateInput.getText().toString().trim();
                 String endDate = endDateInput.getText().toString().trim();
-                int duration;
-                // Validate the dates (if both are not empty)
-                if (!startDate.isEmpty() && !endDate.isEmpty()) {
-                    try {
-                        // Parse the dates using SimpleDateFormat
-                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                        java.util.Date start = sdf.parse(startDate);
-                        java.util.Date end = sdf.parse(endDate);
+                String durationString = durationInput.getText().toString().trim();
+                Integer duration = null;
 
-                        // Calculate the difference in milliseconds
-                        long differenceInMillis = end.getTime() - start.getTime();
+                // check if duration is not empty and parse it
+                if (!durationString.isEmpty()) {
+                    duration = Integer.parseInt(durationString);
+                }
+                // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
 
-                        // Convert milliseconds to days
-                        long daysBetween = differenceInMillis / (1000 * 60 * 60 * 24);
-                        duration = (int) daysBetween;
+                // validate the input
+                if (startDate.isEmpty() && endDate.isEmpty() && duration == null) {
+                    // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
+                    android.widget.Toast.makeText(LocationActivity.this, "Please fill in at least one value!", android.widget.Toast.LENGTH_LONG).show();
+                    return;
+                }
 
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                // calculate the missing value based on the provided inputs and update firestore database
+                FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                try {
+                    if (!startDate.isEmpty() && !endDate.isEmpty()) {
+                        // dates are provided, calculate duration
+                        duration = calculateDuration(startDate, endDate);
+                        // Log.d("CalculateDialog", "Calculated Duration: " + duration);
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
                             updateUserData(userId, startDate, endDate, duration);
                         }
-
-                        android.widget.Toast.makeText(LocationActivity.this, "duration: " + daysBetween, android.widget.Toast.LENGTH_LONG).show();
-                        // save result to user database here
-                    } catch (java.text.ParseException e) {
-                        android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
+                    } else if (!startDate.isEmpty() && duration != null) {
+                        // calculate endDate based on startDate and duration
+                        endDate = calculateEndDate(startDate, duration);
+                        // Log.d("CalculateDialog", "Calculated EndDate: " + endDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
+                    } else if (!endDate.isEmpty() && duration != null) {
+                        // calculate startDate based on endDate and duration
+                        startDate = calculateStartDate(endDate, duration);
+                        // Log.d("CalculateDialog", "Calculated StartDate: " + startDate);
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            updateUserData(userId, startDate, endDate, duration);
+                        }
+                    } else {
+                        // Log.d("CalculateDialog", "Insufficient data to calculate a missing value.");
+                        android.widget.Toast.makeText(LocationActivity.this, "Please enter two out of the three values!", android.widget.Toast.LENGTH_LONG).show();
+                        return;
                     }
-                } else {
-                    android.widget.Toast.makeText(LocationActivity.this, "Please enter both start and end dates!", android.widget.Toast.LENGTH_LONG).show();
+                    // save to user here
+
+                } catch (java.text.ParseException e) {
+                    android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
+                } catch (NumberFormatException e) {
+                    android.widget.Toast.makeText(LocationActivity.this, "Invalid duration format!", android.widget.Toast.LENGTH_LONG).show();
                 }
             });
+
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
@@ -155,7 +180,29 @@ public class LocationActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-    // Update method to save new dates and duration to Firestore
+    public static int calculateDuration(String startDate, String endDate) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date start = sdf.parse(startDate);
+        java.util.Date end = sdf.parse(endDate);
+        return (int) ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    public static String calculateEndDate(String startDate, int duration) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date start = sdf.parse(startDate);
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(start);
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, duration);
+        return sdf.format(calendar.getTime());
+    }
+    public static String calculateStartDate(String endDate, int duration) throws java.text.ParseException {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date end = sdf.parse(endDate);
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(end);
+        calendar.add(java.util.Calendar.DAY_OF_YEAR, -duration);
+        return sdf.format(calendar.getTime());
+    }
     public void updateUserData(String userId, String startDate, String endDate, int totalAllocatedDays) {
 
         // Create a map to hold the fields you want to update
