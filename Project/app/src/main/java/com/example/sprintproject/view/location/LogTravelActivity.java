@@ -39,16 +39,13 @@ public class LogTravelActivity extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> saveTravelLog());
 
-        // Observe the calculation result
         viewModel.getDestination().observe(this, destination -> {
             if (destination != null) {
-                // Handle successful save
                 Toast.makeText(this, "Travel log saved: " + destination.getLocation(), Toast.LENGTH_SHORT).show();
-                finish(); // Close the activity
+                finish();
             }
         });
 
-        // Observe the error message LiveData
         viewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();

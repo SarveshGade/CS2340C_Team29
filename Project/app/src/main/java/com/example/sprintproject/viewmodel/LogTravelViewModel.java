@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.sprintproject.model.Destination;
+import com.example.sprintproject.model.User;
 
 public class LogTravelViewModel extends ViewModel {
     private final MutableLiveData<Destination> destinationLiveData = new MutableLiveData<>();
@@ -17,6 +18,7 @@ public class LogTravelViewModel extends ViewModel {
     public LiveData<String> getErrorMessage() {
         return errorMessageLiveData;
     }
+
 
     public void saveDestination(String location, String startDate, String endDate) {
         String validationMessage = validateInputs(location, startDate, endDate);

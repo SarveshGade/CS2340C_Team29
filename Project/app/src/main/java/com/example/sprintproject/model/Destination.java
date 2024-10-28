@@ -11,16 +11,18 @@ public class Destination {
     private String location;
     private String startDate;
     private String endDate;
-    private int duration; // duration in days
+    private String userId;
+    private int duration;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static final String TAG = "DestinationModel"; // Tag for logging
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String TAG = "DestinationModel";
 
     public Destination(String location, String startDate, String endDate) {
         this.location = location;
+        this.userId = userId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.duration = calculateDuration(); // Initial duration calculation
+        this.duration = calculateDuration();
     }
 
     public String getLocation() {
@@ -45,20 +47,24 @@ public class Destination {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
-        this.duration = calculateDuration(); // Recalculate duration when dates change
+        this.duration = calculateDuration();
     }
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
-        this.duration = calculateDuration(); // Recalculate duration when dates change
+        this.duration = calculateDuration();
     }
 
     private int calculateDuration() {
-        if (startDate == null || endDate == null) return 0;
+        if (startDate == null || endDate == null) {
+            return 0;
+        }
         try {
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
-            if (end.before(start)) return 0;
+            Date start = DATE_FORMAT.parse(startDate);
+            Date end = DATE_FORMAT.parse(endDate);
+            if (end.before(start)) {
+                return 0;
+            }
 
             long diffInMillis = end.getTime() - start.getTime();
             return (int) (diffInMillis / (1000 * 60 * 60 * 24));
@@ -70,8 +76,8 @@ public class Destination {
 
     public static boolean isValidDate(String dateStr) {
         try {
-            dateFormat.setLenient(false);
-            dateFormat.parse(dateStr);
+            DATE_FORMAT.setLenient(false);
+            DATE_FORMAT.parse(dateStr);
             return true;
         } catch (ParseException e) {
             return false;
@@ -83,7 +89,8 @@ public class Destination {
         firestore.collection("destinations")
                 .add(this)
                 .addOnSuccessListener(documentReference ->
-                        System.out.println("Destination saved with ID: " + documentReference.getId()))
+                        System.out.println("Destination saved with ID: "
+                                + documentReference.getId()))
                 .addOnFailureListener(e ->
                         System.err.println("Error saving destination: " + e.getMessage()));
     }

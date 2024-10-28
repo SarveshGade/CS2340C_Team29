@@ -1,7 +1,10 @@
 package com.example.sprintproject.viewmodel;
 
 import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -14,6 +17,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class RegisterViewModel extends AndroidViewModel {
@@ -57,6 +62,33 @@ public class RegisterViewModel extends AndroidViewModel {
                         errorMessage.setValue("Authentication failed.");
                     }
                 });
+    }
+    public String validateEmail(String email) {
+        if (email.isEmpty()) {
+            return "Email cannot be empty";
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            return "Not a valid email";
+        }
+        return null;
+    }
+    public boolean containsDigit(String password) {
+        Pattern pattern = Pattern.compile(".*\\d.*");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+    public String validatePassword(String password) {
+        if (password.isEmpty()) {
+            return "Password cannot be empty";
+        }
+        if (!containsDigit(password)) {
+            return "Doesn't contain digit";
+        }
+        if (password.length() < 6) {
+            return "password is too short";
+        }
+        return null;
     }
 
     private void addUserToFirestore(String userId, User user) {

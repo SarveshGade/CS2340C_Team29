@@ -78,39 +78,27 @@ public class LocationActivity extends AppCompatActivity {
                 String durationString = durationInput.getText().toString().trim();
                 Integer duration = null;
 
-                // check if duration is not empty and parse it
                 if (!durationString.isEmpty()) {
                     duration = Integer.parseInt(durationString);
                 }
-                // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
 
-                // validate the input
                 if (startDate.isEmpty() && endDate.isEmpty() && duration == null) {
-                    // Log.d("CalculateDialog", "Initial Values - StartDate: " + startDate + ", EndDate: " + endDate + ", Duration: " + duration);
                     android.widget.Toast.makeText(LocationActivity.this, "Please fill in at least one value!", android.widget.Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                // calculate the missing value based on the provided inputs
                 try {
                     if (!startDate.isEmpty() && !endDate.isEmpty()) {
-                        // dates are provided, calculate duration
+
                         duration = calculateDuration(startDate, endDate);
-                        // Log.d("CalculateDialog", "Calculated Duration: " + duration);
                     } else if (!startDate.isEmpty() && duration != null) {
-                        // calculate endDate based on startDate and duration
                         endDate = calculateEndDate(startDate, duration);
-                        // Log.d("CalculateDialog", "Calculated EndDate: " + endDate);
                     } else if (!endDate.isEmpty() && duration != null) {
-                        // calculate startDate based on endDate and duration
                         startDate = calculateStartDate(endDate, duration);
-                        // Log.d("CalculateDialog", "Calculated StartDate: " + startDate);
                     } else {
-                        // Log.d("CalculateDialog", "Insufficient data to calculate a missing value.");
                         android.widget.Toast.makeText(LocationActivity.this, "Please enter two out of the three values!", android.widget.Toast.LENGTH_LONG).show();
                         return;
                     }
-                    // save to user here
 
                 } catch (java.text.ParseException e) {
                     android.widget.Toast.makeText(LocationActivity.this, "Invalid date format!", android.widget.Toast.LENGTH_LONG).show();
@@ -122,7 +110,6 @@ public class LocationActivity extends AppCompatActivity {
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-            // Show the dialog
             builder.create().show();
         });
 
