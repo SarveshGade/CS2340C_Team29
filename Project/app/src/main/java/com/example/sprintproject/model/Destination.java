@@ -5,6 +5,7 @@ import android.util.Log;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Destination {
@@ -12,14 +13,16 @@ public class Destination {
     private String startDate;
     private String endDate;
     private int duration; // duration in days
+    private String userId; // User ID associated with the destination
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "DestinationModel"; // Tag for logging
 
-    public Destination(String location, String startDate, String endDate) {
+    public Destination(String location, String startDate, String endDate, String userId) {
         this.location = location;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.userId = userId;
         this.duration = calculateDuration(); // Initial duration calculation
     }
 
@@ -39,6 +42,10 @@ public class Destination {
         return duration;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -53,12 +60,15 @@ public class Destination {
         this.duration = calculateDuration(); // Recalculate duration when dates change
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     private int calculateDuration() {
         if (startDate == null || endDate == null) {
             return 0;
         }
         try {
-
             Date start = DATE_FORMAT.parse(startDate);
             Date end = DATE_FORMAT.parse(endDate);
             if (end.before(start)) {
@@ -84,14 +94,12 @@ public class Destination {
     }
 
     public void saveToFirestore() {
-        FirebaseFirestore firestore = FirestoreManager.getInstance()
-                .getFirestore();
+        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
         firestore.collection("destinations")
                 .add(this)
                 .addOnSuccessListener(documentReference ->
-                        System.out.println("Destination saved with ID: "
-                                + documentReference.getId()))
+                        Log.d(TAG, "Destination saved with ID: " + documentReference.getId()))
                 .addOnFailureListener(e ->
-                        System.err.println("Error saving destination: " + e.getMessage()));
+                        Log.e(TAG, "Error saving destination: " + e.getMessage()));
     }
 }

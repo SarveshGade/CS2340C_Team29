@@ -13,6 +13,7 @@ public class Traveler extends BaseUser implements ITraveler {
     private String startDate;
     private String endDate;
     private int totalAllocatedDays;
+    private int totalUsedDays;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "TravelerModel"; // Tag for logging
@@ -22,6 +23,7 @@ public class Traveler extends BaseUser implements ITraveler {
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAllocatedDays = calculateTotalAllocatedDays();
+        this.totalUsedDays = 0;
     }
 
     public Traveler(String email, String password) {
@@ -61,6 +63,10 @@ public class Traveler extends BaseUser implements ITraveler {
         this.totalAllocatedDays = totalAllocatedDays;
     }
 
+    public int getTotalUsedDays() {
+        return totalUsedDays;
+    }
+
     @Override
     public void addTravelerToFirestore(String travelerInfo) {
         FirebaseFirestore db = FirestoreManager.getInstance().getFirestore();
@@ -71,7 +77,7 @@ public class Traveler extends BaseUser implements ITraveler {
                 .document(travelerInfo) // Use email as the document ID
                 .set(userMap)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "BaseUser added successfully");
+                    Log.d("Firestore", "Traveler added successfully");
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error adding user", e);
