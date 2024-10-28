@@ -58,6 +58,7 @@ public class Destination {
             return 0;
         }
         try {
+
             Date start = DATE_FORMAT.parse(startDate);
             Date end = DATE_FORMAT.parse(endDate);
             if (end.before(start)) {
@@ -83,7 +84,8 @@ public class Destination {
     }
 
     public void saveToFirestore() {
-        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
+        FirebaseFirestore firestore = FirestoreManager.getInstance()
+                .getFirestore();
         firestore.collection("destinations")
                 .add(this)
                 .addOnSuccessListener(documentReference ->

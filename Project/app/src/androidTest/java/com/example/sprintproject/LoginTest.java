@@ -31,4 +31,18 @@ public class LoginTest {
         String result = loginViewModel.validateEmail("invalidEmail");
         assertEquals("Not a valid email", result);
     }
+
+    @Test
+    public void testValidateEmptyPassword() {
+        String result = loginViewModel.validatePassword("");
+        assertEquals("Password cannot be empty", result);
+    }
+
+    @Test
+    public void testValidateValidPassword() {
+        String result = loginViewModel.validatePassword("validPassword");
+        assertNull(result);
+    }
+
+
 }
