@@ -1,10 +1,8 @@
 package com.example.sprintproject.viewmodel;
 
 import android.app.Application;
-import android.content.Intent;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -51,7 +49,7 @@ public class RegisterViewModel extends AndroidViewModel {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
-                            addUserToFirestore(userId, traveler); // Store baseUser data in Firestore
+                            addUserToFirestore(userId, traveler);
                             registrationSuccess.setValue(true);
                         } else {
                             // Handle case where baseUser is null
