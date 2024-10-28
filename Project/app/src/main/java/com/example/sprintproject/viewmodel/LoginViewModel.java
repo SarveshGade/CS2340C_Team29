@@ -39,7 +39,6 @@ public class LoginViewModel extends AndroidViewModel {
                 });
     }
 
-    // Validation methods
     public String validateEmail(String email) {
         if (email.isEmpty()) {
             return "Email cannot be empty";

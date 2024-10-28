@@ -18,6 +18,7 @@ public class LogTravelViewModel extends ViewModel {
         return errorMessageLiveData;
     }
 
+
     public void saveDestination(String location, String startDate, String endDate) {
         String validationMessage = validateInputs(location, startDate, endDate);
 
