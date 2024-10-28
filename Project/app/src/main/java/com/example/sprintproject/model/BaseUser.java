@@ -10,13 +10,9 @@ public class BaseUser implements IUser {
 
     private static final String TAG = "UserModel"; // Tag for logging
 
-    public BaseUser(String email, String password, String startDate, String endDate) {
+    public BaseUser(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public BaseUser(String email, String password) {
-        this(email, password, "N/A", "N/A");
     }
 
     @Override

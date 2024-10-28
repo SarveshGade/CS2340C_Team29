@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.sprintproject.model.BaseUser;
 import com.example.sprintproject.model.FirestoreManager;
+import com.example.sprintproject.model.Traveler;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -38,15 +38,15 @@ public class RegisterViewModel extends AndroidViewModel {
         return errorMessage;
     }
 
-    public void register(BaseUser baseUser) {
-        mAuth.createUserWithEmailAndPassword(baseUser.getEmail(), baseUser.getPassword())
+    public void register(Traveler traveler) {
+        mAuth.createUserWithEmailAndPassword(traveler.getEmail(), traveler.getPassword())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // BaseUser registration successful
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
-                            addUserToFirestore(userId, baseUser); // Store baseUser data in Firestore
+                            addUserToFirestore(userId, traveler); // Store baseUser data in Firestore
                             registrationSuccess.setValue(true);
                         } else {
                             // Handle case where baseUser is null
@@ -60,13 +60,13 @@ public class RegisterViewModel extends AndroidViewModel {
                 });
     }
 
-    private void addUserToFirestore(String userId, BaseUser baseUser) {
+    private void addUserToFirestore(String userId, Traveler traveler) {
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", baseUser.getEmail());
-        userMap.put("password", baseUser.getPassword());
-        userMap.put("startDate", baseUser.getStartDate());
-        userMap.put("endDate", baseUser.getEndDate());
-        userMap.put("totalAllocatedDays", baseUser.getTotalAllocatedDays());
+        userMap.put("email", traveler.getEmail());
+        userMap.put("password", traveler.getPassword());
+        userMap.put("startDate", traveler.getStartDate());
+        userMap.put("endDate", traveler.getEndDate());
+        userMap.put("totalAllocatedDays", traveler.getTotalAllocatedDays());
 
         db.collection("Users")
                 .document(userId)

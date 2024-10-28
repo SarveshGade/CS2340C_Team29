@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.sprintproject.model.BaseUser;
+import com.example.sprintproject.model.Traveler;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -28,8 +28,8 @@ public class LoginViewModel extends AndroidViewModel {
         return errorMessage;
     }
 
-    public void login(BaseUser baseUser) {
-        mAuth.signInWithEmailAndPassword(baseUser.getEmail(), baseUser.getPassword())
+    public void login(Traveler traveler) {
+        mAuth.signInWithEmailAndPassword(traveler.getEmail(), traveler.getPassword())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         loginSuccess.setValue(true);

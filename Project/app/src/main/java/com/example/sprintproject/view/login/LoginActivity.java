@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.BaseUser;
+import com.example.sprintproject.model.Traveler;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.LoginViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -49,23 +49,8 @@ public class LoginActivity extends AppCompatActivity {
             String user = String.valueOf(editTextUser.getText());
             String password = String.valueOf(editTextPassword.getText());
 
-            // Validate inputs using ViewModel methods
-            String emailError = loginViewModel.validateEmail(user);
-            if (emailError != null) {
-                editTextUser.setError(emailError);
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-
-            String passwordError = loginViewModel.validatePassword(password);
-            if (passwordError != null) {
-                editTextPassword.setError(passwordError);
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-
-            BaseUser loginBaseUser = new BaseUser(user, password);
-            loginViewModel.login(loginBaseUser);
+            Traveler loginTraveler = new Traveler(user, password);
+            loginViewModel.login(loginTraveler);
         });
 
         loginViewModel.getLoginSuccess().observe(this, success -> {
