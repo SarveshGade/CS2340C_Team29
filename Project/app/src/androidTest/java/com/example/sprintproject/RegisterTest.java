@@ -31,4 +31,16 @@ public class RegisterTest {
         String result = registerViewModel.validateEmail("invalidEmail");
         assertEquals("Not a valid email", result);
     }
+
+    @Test
+    public void testValidateEmptyPassword() {
+        String result = registerViewModel.validatePassword("");
+        assertEquals("Password cannot be empty", result);
+    }
+
+    @Test
+    public void testValidateValidPassword() {
+        String result = registerViewModel.validatePassword("validPassword");
+        assertNull(result);
+    }
 }
