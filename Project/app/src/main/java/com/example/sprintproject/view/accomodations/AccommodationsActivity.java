@@ -67,7 +67,8 @@ public class AccommodationsActivity extends AppCompatActivity {
         accommodationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
+                Intent intent = new Intent(AccommodationsActivity.this,
+                        AccommodationsActivity.class);
                 startActivity(intent);
             }
         });
@@ -75,7 +76,8 @@ public class AccommodationsActivity extends AppCompatActivity {
         forumButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AccommodationsActivity.this, ForumActivity.class);
+                Intent intent = new Intent(AccommodationsActivity.this,
+                        ForumActivity.class);
                 startActivity(intent);
             }
         });

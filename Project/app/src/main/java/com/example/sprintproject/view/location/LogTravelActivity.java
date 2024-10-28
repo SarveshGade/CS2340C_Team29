@@ -43,7 +43,8 @@ public class LogTravelActivity extends AppCompatActivity {
         viewModel.getDestination().observe(this, destination -> {
             if (destination != null) {
                 // Handle successful save
-                Toast.makeText(this, "Travel log saved: " + destination.getLocation(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Travel log saved: "
+                        + destination.getLocation(), Toast.LENGTH_SHORT).show();
                 finish(); // Close the activity
             }
         });

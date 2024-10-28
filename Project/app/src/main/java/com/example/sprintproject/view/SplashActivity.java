@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
-import com.google.firebase.FirebaseApp;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,6 +36,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        },1500);
+        }, 1500);
     }
 }
