@@ -34,6 +34,7 @@ import java.util.List;
 public class LogisticsActivity extends AppCompatActivity {
 
     private PieChart pieChart;
+    private LogisticsViewModel logisticsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class LogisticsActivity extends AppCompatActivity {
 
         pieChart.setNoDataText(""); // Set no data text to empty to hide it
         pieChart.invalidate();
+
+        logisticsViewModel = new ViewModelProvider(this).get(LogisticsViewModel.class);
 
         Button createGraphButton = findViewById(R.id.button_creategraph);
         createGraphButton.setOnClickListener((l) -> drawChart());
@@ -102,10 +105,23 @@ public class LogisticsActivity extends AppCompatActivity {
     }
     public void drawChart() {
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(3, "Allotted"));
-        entries.add(new PieEntry(7, "Planned"));
 
-        // Create PieDataSet without a label, as each entry has its own label
+        Integer totalAllocatedDays = logisticsViewModel.getTotalAllocatedDays().getValue();
+        Integer totalUsedDays = logisticsViewModel.getTotalUsedDays().getValue();
+
+        // Handle null values more safely
+        if (totalAllocatedDays != null && totalAllocatedDays > 0) {
+            entries.add(new PieEntry(totalAllocatedDays, "Allotted"));
+        } else {
+            entries.add(new PieEntry(0, "Allotted")); // Optional: add a 0 entry
+        }
+
+        if (totalUsedDays != null && totalUsedDays > 0) {
+            entries.add(new PieEntry(totalUsedDays, "Planned"));
+        } else {
+            entries.add(new PieEntry(0, "Planned")); // Optional: add a 0 entry
+        }
+
         PieDataSet dataSet = new PieDataSet(entries, "");
 
         // Set colors for the chart slices
@@ -114,20 +130,19 @@ public class LogisticsActivity extends AppCompatActivity {
         colors.add(Color.parseColor("#309967")); // Custom color 2
         dataSet.setColors(colors);
 
-
         // Set text properties for values
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.BLACK); // Set labels color to black
 
         // Set up PieChart
         PieChart pieChart = findViewById(R.id.pieChart);
-        pieChart.setNoDataText("");
+        pieChart.setNoDataText("No data available");
         pieChart.setData(new PieData(dataSet));
         pieChart.getDescription().setEnabled(false); // Hide description label
         pieChart.setEntryLabelColor(Color.BLACK);
 
-
         pieChart.invalidate(); // Refresh the chart
     }
+
 
 }

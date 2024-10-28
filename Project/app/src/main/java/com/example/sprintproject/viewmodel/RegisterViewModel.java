@@ -99,6 +99,7 @@ public class RegisterViewModel extends AndroidViewModel {
         userMap.put("startDate", traveler.getStartDate());
         userMap.put("endDate", traveler.getEndDate());
         userMap.put("totalAllocatedDays", traveler.getTotalAllocatedDays());
+        userMap.put("totalUsedDays", traveler.getTotalUsedDays());
 
         db.collection("Users")
                 .document(userId)
