@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.Date;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -55,11 +55,15 @@ public class Destination {
     }
 
     private int calculateDuration() {
-        if (startDate == null || endDate == null) return 0;
+        if (startDate == null || endDate == null) {
+            return 0;
+        }
         try {
             Date start = dateFormat.parse(startDate);
             Date end = dateFormat.parse(endDate);
-            if (end.before(start)) return 0;
+            if (end.before(start)) {
+                return 0;
+            }
 
             long diffInMillis = end.getTime() - start.getTime();
             return (int) (diffInMillis / (1000 * 60 * 60 * 24));
@@ -80,11 +84,13 @@ public class Destination {
     }
 
     public void saveToFirestore() {
-        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
+        FirebaseFirestore firestore = FirestoreManager.getInstance()
+                .getFirestore();
         firestore.collection("destinations")
                 .add(this)
                 .addOnSuccessListener(documentReference ->
-                        System.out.println("Destination saved with ID: " + documentReference.getId()))
+                        System.out.println("Destination saved with ID: "
+                                + documentReference.getId()))
                 .addOnFailureListener(e ->
                         System.err.println("Error saving destination: " + e.getMessage()));
     }
