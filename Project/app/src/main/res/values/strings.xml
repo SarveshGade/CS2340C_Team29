@@ -19,4 +19,7 @@
     <string name="dining_screen">Welcome to Dining</string>
     <string name="welcome_to_logistics">Welcome to Logistics</string>
     <string name="welcome_to_accommodations">Welcome to Accommodations</string>
+    <string name="calculate_vacation_time">Calculate Vacation Time</string>
+    <string name="log_travel">Log Travel</string>
+    <string name="no_days_planned">0 days planned</string>
 </resources>

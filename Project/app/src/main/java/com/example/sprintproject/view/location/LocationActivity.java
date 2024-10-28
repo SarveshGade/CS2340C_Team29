@@ -1,9 +1,12 @@
 package com.example.sprintproject.view.location;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -42,7 +45,6 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_location);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -183,14 +185,45 @@ public class LocationActivity extends AppCompatActivity {
         destinationContainer.removeAllViews();
         Log.d("LocationActivity", "Displaying destinations: " + destinations);
 
-        for (Map<String, Object> destination : destinations) {
-            // create a TextView for each destination
-            TextView destinationView = new TextView(this);
-            String displayText = "Location: " + destination.get("location") +
-                    "\nStart Date: " + destination.get("startDate") +
-                    " End Date: " + destination.get("endDate");
-            destinationView.setText(displayText);
-            destinationContainer.addView(destinationView);
+        for (int i = 0; i < destinations.size(); i++) {
+            Map<String, Object> destination = destinations.get(i);
+
+            // Create a horizontal LinearLayout for each destination
+            LinearLayout destinationLayout = new LinearLayout(this);
+            destinationLayout.setOrientation(LinearLayout.HORIZONTAL);
+            destinationLayout.setPadding(16, 16, 16, 16); // Add padding for spacing
+            destinationLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+            // Alternate background color of rows
+            if (i % 2 == 0) {
+                destinationLayout.setBackgroundColor(Color.parseColor("#f0f0f0")); // Light gray for even rows
+            } else {
+                destinationLayout.setBackgroundColor(Color.parseColor("#ffffff")); // White for odd rows
+            }
+
+            // Create and set the "Destination" TextView
+            TextView destinationTextView = new TextView(this);
+            String location = (String) destination.get("location");
+            destinationTextView.setText(location);
+            destinationTextView.setTypeface(null, Typeface.BOLD);
+            destinationTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)); // Weight 1 to align left
+
+            // Get the planned days from the "duration" field
+            Long duration = (Long) destination.get("duration");
+            String daysPlanned = (duration != null ? duration : 0) + " days planned";
+
+            // Create and set the days planned TextView
+            TextView daysTextView = new TextView(this);
+            daysTextView.setText(daysPlanned);
+            daysTextView.setGravity(Gravity.END);
+
+            // Add both TextViews to the LinearLayout
+            destinationLayout.addView(destinationTextView);
+            destinationLayout.addView(daysTextView);
+
+            // Add the LinearLayout to the container
+            destinationContainer.addView(destinationLayout);
         }
     }
 
@@ -199,7 +232,6 @@ public class LocationActivity extends AppCompatActivity {
         db.collection("destinations")
                 .whereEqualTo("userId", userId)
                 .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
-                .limit(5)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -214,6 +246,18 @@ public class LocationActivity extends AppCompatActivity {
                             destinationData.put("userId", document.getString("userId"));
                             destinations.add(destinationData);
                         }
+                        // Sort by startDate in descending order
+                        destinations.sort((d1, d2) -> {
+                            String date1 = (String) d1.get("startDate");
+                            String date2 = (String) d2.get("startDate");
+                            return date2.compareTo(date1); // Compare in reverse for descending order
+                        });
+
+                        // Take the last 5 trips (most recent first)
+                        if (destinations.size() > 5) {
+                            destinations = destinations.subList(0, 5);
+                        }
+
                         Log.d("LocationActivity", "Destinations fetched: " + destinations);
                         displayDestinations(destinations);
                     } else {
@@ -221,8 +265,6 @@ public class LocationActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     public static int calculateDuration(String startDate, String endDate)
             throws java.text.ParseException {

@@ -35,7 +35,7 @@
         android:id="@+id/logTravelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log Travel"
+        android:text="@string/log_travel"
         android:backgroundTint="@color/orange"
         app:layout_constraintTop_toBottomOf="@id/locationHeader"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,23 +48,19 @@
         android:layout_height="55dp"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/orange"
-        android:text="Calculate Vacation Time"
+        android:text="@string/calculate_vacation_time"
         app:layout_constraintTop_toBottomOf="@id/logTravelButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5" />
-
 
     <LinearLayout
         android:id="@+id/destinationContainer"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:orientation="vertical"
+        android:layout_marginTop="20dp"
         android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@id/calculateVacationTime"/>
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

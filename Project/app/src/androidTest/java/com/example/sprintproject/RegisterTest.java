@@ -40,7 +40,13 @@ public class RegisterTest {
 
     @Test
     public void testValidateValidPassword() {
-        String result = registerViewModel.validatePassword("validPassword");
+        String result = registerViewModel.validatePassword("validPassword12");
         assertNull(result);
+    }
+
+    @Test
+    public void testValidateInvalidPasswordNoDigits() {
+        String result = registerViewModel.validatePassword("validPassword");
+        assertEquals("Doesn't contain digit", result);
     }
 }

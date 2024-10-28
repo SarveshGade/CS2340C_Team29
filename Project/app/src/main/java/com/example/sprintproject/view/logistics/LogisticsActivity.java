@@ -111,38 +111,38 @@ public class LogisticsActivity extends AppCompatActivity {
 
         // Handle null values more safely
         if (totalAllocatedDays != null && totalAllocatedDays > 0) {
-            entries.add(new PieEntry(totalAllocatedDays, "Allotted"));
+            entries.add(new PieEntry(totalAllocatedDays - totalUsedDays, "Remaining"));
         } else {
-            entries.add(new PieEntry(0, "Allotted")); // Optional: add a 0 entry
+            entries.add(new PieEntry(0, "Remaining"));
         }
 
         if (totalUsedDays != null && totalUsedDays > 0) {
             entries.add(new PieEntry(totalUsedDays, "Planned"));
         } else {
-            entries.add(new PieEntry(0, "Planned")); // Optional: add a 0 entry
+            entries.add(new PieEntry(0, "Planned"));
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
 
         // Set colors for the chart slices
         ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(Color.parseColor("#304567")); // Custom color 1
-        colors.add(Color.parseColor("#309967")); // Custom color 2
+        colors.add(Color.parseColor("#304567"));
+        colors.add(Color.parseColor("#309967"));
         dataSet.setColors(colors);
 
         // Set text properties for values
         dataSet.setValueTextSize(12f);
-        dataSet.setValueTextColor(Color.BLACK); // Set labels color to black
+        dataSet.setValueTextColor(Color.WHITE);
+
+        dataSet.setDrawValues(true);
 
         // Set up PieChart
         PieChart pieChart = findViewById(R.id.pieChart);
         pieChart.setNoDataText("No data available");
         pieChart.setData(new PieData(dataSet));
-        pieChart.getDescription().setEnabled(false); // Hide description label
-        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setEntryLabelColor(Color.TRANSPARENT);
 
         pieChart.invalidate(); // Refresh the chart
     }
-
-
 }
