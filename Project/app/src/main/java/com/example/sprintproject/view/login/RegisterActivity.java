@@ -76,7 +76,6 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-
             Traveler traveler = new Traveler(email, password);
             registerViewModel.register(traveler);
         });
