@@ -11,18 +11,16 @@ public class Destination {
     private String location;
     private String startDate;
     private String endDate;
-    private String userId;
-    private int duration;
+    private int duration; // duration in days
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private static final String TAG = "DestinationModel";
+    private static final String TAG = "DestinationModel"; // Tag for logging
 
     public Destination(String location, String startDate, String endDate) {
         this.location = location;
-        this.userId = userId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.duration = calculateDuration();
+        this.duration = calculateDuration(); // Initial duration calculation
     }
 
     public String getLocation() {
@@ -47,12 +45,12 @@ public class Destination {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
-        this.duration = calculateDuration();
+        this.duration = calculateDuration(); // Recalculate duration when dates change
     }
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
-        this.duration = calculateDuration();
+        this.duration = calculateDuration(); // Recalculate duration when dates change
     }
 
     private int calculateDuration() {

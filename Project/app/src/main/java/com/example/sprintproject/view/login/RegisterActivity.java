@@ -17,7 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.User;
+import com.example.sprintproject.model.BaseUser;
+import com.example.sprintproject.model.Traveler;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
@@ -62,23 +63,34 @@ public class RegisterActivity extends AppCompatActivity {
             String email = String.valueOf(editTextEmail.getText());
             String password = String.valueOf(editTextPassword.getText());
 
-            String emailError = registerViewModel.validateEmail(email);
-            if (emailError != null) {
-                editTextEmail.setError(emailError);
+            if (email.isEmpty()) {
+                editTextEmail.setError("Email cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (password.isEmpty()) {
+                editTextPassword.setError("Password cannot be empty");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (password.length() < 6) {
+                editTextPassword.setError("Password cannot be less than 6 characters");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                editTextEmail.setError("Not a valid email");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            if (!containsDigit(password)) {
+                editTextPassword.setError("Password should contain a digit for added security");
                 progressBar.setVisibility(View.GONE);
                 return;
             }
 
-            String passwordError = registerViewModel.validatePassword(password);
-            if (passwordError != null) {
-                editTextPassword.setError(passwordError);
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-
-
-            User newUser = new User(email, password);
-            registerViewModel.register(newUser);
+            Traveler traveler = new Traveler(email, password);
+            registerViewModel.register(traveler);
         });
 
         registerViewModel.getRegistrationSuccess().observe(this, success -> {
@@ -98,5 +110,9 @@ public class RegisterActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         });
     }
-
+    public boolean containsDigit(String password) {
+        Pattern pattern = Pattern.compile(".*\\d.*");
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
 }
