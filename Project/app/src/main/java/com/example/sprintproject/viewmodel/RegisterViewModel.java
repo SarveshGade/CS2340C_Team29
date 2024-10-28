@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.sprintproject.model.FirestoreManager;
-import com.example.sprintproject.model.User;
+import com.example.sprintproject.model.Traveler;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -38,19 +38,19 @@ public class RegisterViewModel extends AndroidViewModel {
         return errorMessage;
     }
 
-    public void register(User user) {
-        mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
+    public void register(Traveler traveler) {
+        mAuth.createUserWithEmailAndPassword(traveler.getEmail(), traveler.getPassword())
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // User registration successful
+                        // BaseUser registration successful
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String userId = firebaseUser.getUid();
-                            addUserToFirestore(userId, user); // Store user data in Firestore
+                            addUserToFirestore(userId, traveler); // Store baseUser data in Firestore
                             registrationSuccess.setValue(true);
                         } else {
-                            // Handle case where user is null
-                            errorMessage.setValue("Error getting user information.");
+                            // Handle case where baseUser is null
+                            errorMessage.setValue("Error getting baseUser information.");
                         }
 
                         registrationSuccess.setValue(true);
@@ -60,23 +60,23 @@ public class RegisterViewModel extends AndroidViewModel {
                 });
     }
 
-    private void addUserToFirestore(String userId, User user) {
+    private void addUserToFirestore(String userId, Traveler traveler) {
         Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", user.getEmail());
-        userMap.put("password", user.getPassword());
-        userMap.put("startDate", user.getStartDate());
-        userMap.put("endDate", user.getEndDate());
-        userMap.put("totalAllocatedDays", user.getTotalAllocatedDays());
+        userMap.put("email", traveler.getEmail());
+        userMap.put("password", traveler.getPassword());
+        userMap.put("startDate", traveler.getStartDate());
+        userMap.put("endDate", traveler.getEndDate());
+        userMap.put("totalAllocatedDays", traveler.getTotalAllocatedDays());
 
         db.collection("Users")
                 .document(userId)
                 .set(userMap)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "User data added successfully");
+                    Log.d("Firestore", "BaseUser data added successfully");
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error adding user data", e);
-                    errorMessage.setValue("Error adding user to Firestore.");
+                    Log.w("Firestore", "Error adding baseUser data", e);
+                    errorMessage.setValue("Error adding baseUser to Firestore.");
                 });
 
     }
