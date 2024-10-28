@@ -54,4 +54,22 @@ public class LocationActivityTest {
             assertEquals(expectedEndDate, actualEndDate);
         });
     }
+
+    @Test
+    public void testCalculateVacationTime_withEndDateAndDuration() {
+        activityScenarioRule.getScenario().onActivity(activity -> {
+            String endDate = "2024-01-11";
+            int duration = 10;
+            // call the method directly to calculate end date
+            String actualEndDate = null;
+            try {
+                actualEndDate = LocationActivity.calculateStartDate(endDate, duration);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            String expectedEndDate = "2024-01-01";
+
+            assertEquals(expectedEndDate, actualEndDate);
+        });
+    }
 }

@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.FirestoreManager;
@@ -21,10 +24,12 @@ import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 
+import com.example.sprintproject.viewmodel.LocationViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +42,6 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_location);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -134,6 +138,24 @@ public class LocationActivity extends AppCompatActivity {
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.create().show();
         });
+
+//        RecyclerView destinationRecyclerView = findViewById(R.id.destinationRecyclerView);
+//        destinationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        // Initialize adapter with empty list initially
+//        DestinationWrapper destinationAdapter = new DestinationWrapper(new ArrayList<>());
+//        destinationRecyclerView.setAdapter(destinationAdapter);
+//        // Get ViewModel and observe the LiveData
+//        LocationViewModel locationViewModel = new ViewModelProvider(
+//                this).get(LocationViewModel.class);
+//        // Fetch destinations for the logged-in user
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null) {
+//            locationViewModel.fetchTopDestinationsForUser(currentUser.getUid());
+//        }
+//        locationViewModel.getDestinationListLiveData().observe(this, destinations -> {
+//            // Update adapter data
+//            destinationAdapter.notifyDataSetChanged();
+//        });
 
         logTravelButton.setOnClickListener(v -> {
             Intent intent = new Intent(LocationActivity.this,

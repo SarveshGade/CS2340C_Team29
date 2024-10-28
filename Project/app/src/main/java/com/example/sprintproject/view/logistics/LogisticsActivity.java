@@ -132,14 +132,14 @@ public class LogisticsActivity extends AppCompatActivity {
 
         // Set text properties for values
         dataSet.setValueTextSize(12f);
-        dataSet.setValueTextColor(Color.BLACK); // Set labels color to black
+        dataSet.setValueTextColor(Color.WHITE); // Set labels color to black
 
         // Set up PieChart
         PieChart pieChart = findViewById(R.id.pieChart);
         pieChart.setNoDataText("No data available");
         pieChart.setData(new PieData(dataSet));
         pieChart.getDescription().setEnabled(false); // Hide description label
-        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setEntryLabelColor(Color.WHITE);
 
         pieChart.invalidate(); // Refresh the chart
     }
