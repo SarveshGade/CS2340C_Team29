@@ -4,7 +4,7 @@ package com.example.sprintproject.model;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FirestoreManager {
-    private volatile static FirestoreManager uniqueInstance;
+    private static volatile FirestoreManager uniqueInstance;
     private final FirebaseFirestore firestore;
 
     private FirestoreManager() {
