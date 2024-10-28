@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-//import java.util.Calendar;
 import java.util.Date;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -14,7 +13,7 @@ public class Destination {
     private String endDate;
     private int duration; // duration in days
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "DestinationModel"; // Tag for logging
 
     public Destination(String location, String startDate, String endDate) {
@@ -59,8 +58,9 @@ public class Destination {
             return 0;
         }
         try {
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
+
+            Date start = DATE_FORMAT.parse(startDate);
+            Date end = DATE_FORMAT.parse(endDate);
             if (end.before(start)) {
                 return 0;
             }
@@ -75,8 +75,8 @@ public class Destination {
 
     public static boolean isValidDate(String dateStr) {
         try {
-            dateFormat.setLenient(false);
-            dateFormat.parse(dateStr);
+            DATE_FORMAT.setLenient(false);
+            DATE_FORMAT.parse(dateStr);
             return true;
         } catch (ParseException e) {
             return false;

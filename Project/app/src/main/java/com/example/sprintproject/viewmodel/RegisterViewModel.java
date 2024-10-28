@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.sprintproject.model.FirestoreManager;
 import com.example.sprintproject.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,7 +27,7 @@ public class RegisterViewModel extends AndroidViewModel {
     public RegisterViewModel(@NonNull Application application) {
         super(application);
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        db = FirestoreManager.getInstance().getFirestore();
     }
 
     public MutableLiveData<Boolean> getRegistrationSuccess() {
@@ -63,6 +64,9 @@ public class RegisterViewModel extends AndroidViewModel {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", user.getEmail());
         userMap.put("password", user.getPassword());
+        userMap.put("startDate", user.getStartDate());
+        userMap.put("endDate", user.getEndDate());
+        userMap.put("totalAllocatedDays", user.getTotalAllocatedDays());
 
         db.collection("Users")
                 .document(userId)

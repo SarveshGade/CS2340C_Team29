@@ -16,7 +16,7 @@ public class User {
     private String endDate;
     private int totalAllocatedDays;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "UserModel"; // Tag for logging
 
     public User() {
@@ -26,17 +26,16 @@ public class User {
         this.password = ""; // Default password
     }
 
-    public User(String email, String password, String estStartDate, String estEndDate) {
+    public User(String email, String password, String startDate, String endDate) {
         this.email = email;
         this.password = password;
-        this.startDate = estStartDate;
-        this.endDate = estEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.totalAllocatedDays = calculateTotalAllocatedDays();
     }
 
     public User(String email, String password) {
-        this.email = email;
-        this.password = password;
+        this(email, password, "0", "0");
     }
 
     public String getEmail() {
@@ -46,6 +45,26 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getStartDate() {
+        return startDate;
+    }
+    public String getEndDate() {
+        return endDate;
+    }
+    public int getTotalAllocatedDays() {
+        return totalAllocatedDays;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+    public void setTotalAllocatedDays(int totalAllocatedDays) {
+        this.totalAllocatedDays = totalAllocatedDays;
+    }
+
 
     public void addUserToFirestore(String userInfo) {
         FirebaseFirestore db = FirestoreManager.getInstance().getFirestore();
@@ -62,28 +81,17 @@ public class User {
                     Log.w("Firestore", "Error adding user", e);
                 });
     }
-    // Update method to save new dates and duration to Firestore
-    public void updateDatesAndDuration() {
-        FirebaseFirestore firestore = FirestoreManager.getInstance().getFirestore();
 
-        firestore.collection("users")
-                .document(this.email)
-                .update(
-                        "startDate", startDate,
-                        "endDate", endDate,
-                        "totalAllocatedDays", totalAllocatedDays
-                )
-                .addOnSuccessListener(aVoid ->
-                        System.out.println("User dates and duration updated successfully."))
-                .addOnFailureListener(e ->
-                        System.err.println("Error updating user data: " + e.getMessage()));
-    }
     private int calculateTotalAllocatedDays() {
-        if (startDate == null || endDate == null) return 0;
+        if (startDate == null || endDate == null) {
+            return 0;
+        }
         try {
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
-            if (end.before(start)) return 0;
+            Date start = DATE_FORMAT.parse(startDate);
+            Date end = DATE_FORMAT.parse(endDate);
+            if (end.before(start)) {
+                return 0;
+            }
 
             long diffInMillis = end.getTime() - start.getTime();
             return (int) (diffInMillis / (1000 * 60 * 60 * 24));
