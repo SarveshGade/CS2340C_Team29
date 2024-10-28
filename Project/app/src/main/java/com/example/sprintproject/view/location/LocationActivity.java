@@ -1,21 +1,22 @@
 package com.example.sprintproject.view.location;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.FirestoreManager;
@@ -24,13 +25,15 @@ import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 
-import com.example.sprintproject.viewmodel.LocationViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LocationActivity extends AppCompatActivity {
@@ -57,6 +60,15 @@ public class LocationActivity extends AppCompatActivity {
         Button calculateDays = findViewById(R.id.calculateVacationTime);
         mAuth = FirebaseAuth.getInstance();
         db = FirestoreManager.getInstance().getFirestore();
+
+        // retrieve user's destinations
+        destinationContainer = findViewById(R.id.destinationContainer);
+
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            fetchUserDestinations(userId);
+        }
 
         calculateDays.setOnClickListener(v -> {
             android.app.AlertDialog.Builder builder =
@@ -98,7 +110,6 @@ public class LocationActivity extends AppCompatActivity {
                     return;
                 }
                 // calculate the missing value based on the provided inputs and update db
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 try {
                     if (!startDate.isEmpty() && !endDate.isEmpty()) {
                         // dates are provided, calculate duration
@@ -139,24 +150,6 @@ public class LocationActivity extends AppCompatActivity {
             builder.create().show();
         });
 
-//        RecyclerView destinationRecyclerView = findViewById(R.id.destinationRecyclerView);
-//        destinationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        // Initialize adapter with empty list initially
-//        DestinationWrapper destinationAdapter = new DestinationWrapper(new ArrayList<>());
-//        destinationRecyclerView.setAdapter(destinationAdapter);
-//        // Get ViewModel and observe the LiveData
-//        LocationViewModel locationViewModel = new ViewModelProvider(
-//                this).get(LocationViewModel.class);
-//        // Fetch destinations for the logged-in user
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null) {
-//            locationViewModel.fetchTopDestinationsForUser(currentUser.getUid());
-//        }
-//        locationViewModel.getDestinationListLiveData().observe(this, destinations -> {
-//            // Update adapter data
-//            destinationAdapter.notifyDataSetChanged();
-//        });
-
         logTravelButton.setOnClickListener(v -> {
             Intent intent = new Intent(LocationActivity.this,
                     LogTravelActivity.class);
@@ -188,6 +181,91 @@ public class LocationActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    private void displayDestinations(List<Map<String, Object>> destinations) {
+        destinationContainer.removeAllViews();
+        Log.d("LocationActivity", "Displaying destinations: " + destinations);
+
+        for (int i = 0; i < destinations.size(); i++) {
+            Map<String, Object> destination = destinations.get(i);
+
+            // Create a horizontal LinearLayout for each destination
+            LinearLayout destinationLayout = new LinearLayout(this);
+            destinationLayout.setOrientation(LinearLayout.HORIZONTAL);
+            destinationLayout.setPadding(16, 16, 16, 16); // Add padding for spacing
+            destinationLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+            // Alternate background color of rows
+            if (i % 2 == 0) {
+                destinationLayout.setBackgroundColor(Color.parseColor("#f0f0f0")); // Light gray for even rows
+            } else {
+                destinationLayout.setBackgroundColor(Color.parseColor("#ffffff")); // White for odd rows
+            }
+
+            // Create and set the "Destination" TextView
+            TextView destinationTextView = new TextView(this);
+            String location = (String) destination.get("location");
+            destinationTextView.setText(location);
+            destinationTextView.setTypeface(null, Typeface.BOLD);
+            destinationTextView.setLayoutParams(new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)); // Weight 1 to align left
+
+            // Get the planned days from the "duration" field
+            Long duration = (Long) destination.get("duration");
+            String daysPlanned = (duration != null ? duration : 0) + " days planned";
+
+            // Create and set the days planned TextView
+            TextView daysTextView = new TextView(this);
+            daysTextView.setText(daysPlanned);
+            daysTextView.setGravity(Gravity.END);
+
+            // Add both TextViews to the LinearLayout
+            destinationLayout.addView(destinationTextView);
+            destinationLayout.addView(daysTextView);
+
+            // Add the LinearLayout to the container
+            destinationContainer.addView(destinationLayout);
+        }
+    }
+
+    private void fetchUserDestinations(String userId) {
+        Log.d("LocationActivity", "Fetching destinations for user: " + userId);
+        db.collection("destinations")
+                .whereEqualTo("userId", userId)
+                .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Map<String, Object>> destinations = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> destinationData = new HashMap<>();
+                            destinationData.put("destinationID", document.getId());
+                            destinationData.put("duration", document.getLong("duration"));
+                            destinationData.put("endDate", document.getString("endDate"));
+                            destinationData.put("location", document.getString("location"));
+                            destinationData.put("startDate", document.getString("startDate"));
+                            destinationData.put("userId", document.getString("userId"));
+                            destinations.add(destinationData);
+                        }
+                        // Sort by startDate in descending order
+                        destinations.sort((d1, d2) -> {
+                            String date1 = (String) d1.get("startDate");
+                            String date2 = (String) d2.get("startDate");
+                            return date2.compareTo(date1); // Compare in reverse for descending order
+                        });
+
+                        // Take the last 5 trips (most recent first)
+                        if (destinations.size() > 5) {
+                            destinations = destinations.subList(0, 5);
+                        }
+
+                        Log.d("LocationActivity", "Destinations fetched: " + destinations);
+                        displayDestinations(destinations);
+                    } else {
+                        Log.w("Firestore", "Error getting documents.", task.getException());
+                    }
+                });
+    }
+
     public static int calculateDuration(String startDate, String endDate)
             throws java.text.ParseException {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -216,19 +294,19 @@ public class LocationActivity extends AppCompatActivity {
     public void updateUserData(String userId, String startDate,
                                String endDate, int totalAllocatedDays) {
 
-        // Create a map to hold the fields you want to update
+        // create a map to hold the fields you want to update
         Map<String, Object> updates = new HashMap<>();
         updates.put("startDate", startDate);
         updates.put("endDate", endDate);
         updates.put("totalAllocatedDays", totalAllocatedDays);
 
-        // Update the document with the given ID
+        // update the document with the given ID
         db.collection("Users")
                 .document(userId)
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
-                    // Successfully updated
-                    Log.d("Firestore", "Traveler data updated successfully.");
+                    // successfully updated
+                    Log.d("Firestore", "User data updated successfully.");
 
                 })
                 .addOnFailureListener(e -> {
