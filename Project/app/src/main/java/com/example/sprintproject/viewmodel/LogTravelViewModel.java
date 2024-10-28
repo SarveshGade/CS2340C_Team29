@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.sprintproject.model.Destination;
-import com.example.sprintproject.model.User;
 
 public class LogTravelViewModel extends ViewModel {
     private final MutableLiveData<Destination> destinationLiveData = new MutableLiveData<>();

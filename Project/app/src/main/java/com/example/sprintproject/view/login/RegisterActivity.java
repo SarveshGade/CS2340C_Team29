@@ -62,32 +62,20 @@ public class RegisterActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             String email = String.valueOf(editTextEmail.getText());
             String password = String.valueOf(editTextPassword.getText());
+            String emailError = registerViewModel.validateEmail(email);
 
-            if (email.isEmpty()) {
-                editTextEmail.setError("Email cannot be empty");
+            if (emailError != null) {
+                editTextEmail.setError(emailError);
                 progressBar.setVisibility(View.GONE);
                 return;
             }
-            if (password.isEmpty()) {
-                editTextPassword.setError("Password cannot be empty");
+            String passwordError = registerViewModel.validatePassword(password);
+            if (passwordError != null) {
+                editTextPassword.setError(passwordError);
                 progressBar.setVisibility(View.GONE);
                 return;
             }
-            if (password.length() < 6) {
-                editTextPassword.setError("Password cannot be less than 6 characters");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                editTextEmail.setError("Not a valid email");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (!containsDigit(password)) {
-                editTextPassword.setError("Password should contain a digit for added security");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
+
 
             Traveler traveler = new Traveler(email, password);
             registerViewModel.register(traveler);
@@ -109,10 +97,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
             progressBar.setVisibility(View.GONE);
         });
-    }
-    public boolean containsDigit(String password) {
-        Pattern pattern = Pattern.compile(".*\\d.*");
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
     }
 }

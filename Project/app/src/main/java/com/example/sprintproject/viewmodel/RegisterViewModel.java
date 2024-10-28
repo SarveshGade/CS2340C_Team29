@@ -87,7 +87,7 @@ public class RegisterViewModel extends AndroidViewModel {
             return "Doesn't contain digit";
         }
         if (password.length() < 6) {
-            return "password is too short";
+            return "Password is too short";
         }
         return null;
     }

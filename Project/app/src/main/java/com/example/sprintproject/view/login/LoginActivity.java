@@ -48,7 +48,18 @@ public class LoginActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             String user = String.valueOf(editTextUser.getText());
             String password = String.valueOf(editTextPassword.getText());
-
+            String emailError = loginViewModel.validateEmail(user);
+            if (emailError != null) {
+                editTextUser.setError(emailError);
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+            String passwordError = loginViewModel.validatePassword(password);
+            if (passwordError != null) {
+                editTextPassword.setError(passwordError);
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
             Traveler loginTraveler = new Traveler(user, password);
             loginViewModel.login(loginTraveler);
         });
