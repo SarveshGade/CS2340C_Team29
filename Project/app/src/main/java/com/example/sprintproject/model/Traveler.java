@@ -14,7 +14,7 @@ public class Traveler extends BaseUser implements ITraveler {
     private String endDate;
     private int totalAllocatedDays;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "TravelerModel"; // Tag for logging
 
     public Traveler(String email, String password, String startDate, String endDate) {
@@ -37,13 +37,19 @@ public class Traveler extends BaseUser implements ITraveler {
     }
 
     @Override
-    public String getStartDate() { return startDate; }
+    public String getStartDate() {
+        return startDate;
+    }
 
     @Override
-    public String getEndDate() { return endDate; }
+    public String getEndDate() {
+        return endDate;
+    }
 
     @Override
-    public int getTotalAllocatedDays() { return totalAllocatedDays; }
+    public int getTotalAllocatedDays() {
+        return totalAllocatedDays;
+    }
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
@@ -73,11 +79,15 @@ public class Traveler extends BaseUser implements ITraveler {
     }
 
     private int calculateTotalAllocatedDays() {
-        if (startDate == null || endDate == null) return 0;
+        if (startDate == null || endDate == null) {
+            return 0;
+        }
         try {
-            Date start = dateFormat.parse(startDate);
-            Date end = dateFormat.parse(endDate);
-            if (end.before(start)) return 0;
+            Date start = DATE_FORMAT.parse(startDate);
+            Date end = DATE_FORMAT.parse(endDate);
+            if (end.before(start)) {
+                return 0;
+            }
 
             long diffInMillis = end.getTime() - start.getTime();
             return (int) (diffInMillis / (1000 * 60 * 60 * 24));

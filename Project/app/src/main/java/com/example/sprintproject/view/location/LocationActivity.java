@@ -65,11 +65,11 @@ public class LocationActivity extends AppCompatActivity {
 
             final android.widget.EditText startDateInput =
                     new android.widget.EditText(LocationActivity.this);
-            startDateInput.setHint("Start Date (yyyy-MM-dd)");
+            startDateInput.setHint("Start Date (yyyy-mm-dd)");
             layout.addView(startDateInput);
             final android.widget.EditText endDateInput =
                     new android.widget.EditText(LocationActivity.this);
-            endDateInput.setHint("End Date (yyyy-MM-dd)");
+            endDateInput.setHint("End Date (yyyy-mm-dd)");
             layout.addView(endDateInput);
             final android.widget.EditText durationInput =
                     new android.widget.EditText(LocationActivity.this);
@@ -85,9 +85,11 @@ public class LocationActivity extends AppCompatActivity {
                     duration = Integer.parseInt(durationString);
                 }
                 // validate the input
-                if (startDate.isEmpty() && endDate.isEmpty() && duration == null) {
+                if (startDate.isEmpty() && endDate.isEmpty()
+                        || startDate.isEmpty() && duration == null
+                        || endDate.isEmpty() && duration == null) {
                     android.widget.Toast.makeText(LocationActivity.this,
-                            "Please fill in at least one value!",
+                            "Please fill in at least two values!",
                             android.widget.Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -132,6 +134,7 @@ public class LocationActivity extends AppCompatActivity {
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.create().show();
         });
+
         logTravelButton.setOnClickListener(v -> {
             Intent intent = new Intent(LocationActivity.this,
                     LogTravelActivity.class);
@@ -203,7 +206,7 @@ public class LocationActivity extends AppCompatActivity {
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
                     // Successfully updated
-                    Log.d("Firestore", "BaseUser data updated successfully.");
+                    Log.d("Firestore", "Traveler data updated successfully.");
 
                 })
                 .addOnFailureListener(e -> {
