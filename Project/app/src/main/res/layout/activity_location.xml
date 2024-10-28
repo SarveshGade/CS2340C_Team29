@@ -55,6 +55,16 @@
         app:layout_constraintHorizontal_bias="0.5" />
 
 
+    <LinearLayout
+        android:id="@+id/destinationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/calculateVacationTime"/>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

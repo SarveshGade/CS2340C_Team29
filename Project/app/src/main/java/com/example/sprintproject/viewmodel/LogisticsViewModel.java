@@ -39,13 +39,15 @@ public class LogisticsViewModel extends ViewModel {
             db.collection("Users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     if (documentSnapshot.contains("totalAllocatedDays")) {
-                        totalAllocatedDays.setValue(documentSnapshot.getLong("totalAllocatedDays").intValue());
+                        totalAllocatedDays.setValue(documentSnapshot
+                                .getLong("totalAllocatedDays").intValue());
                     } else {
                         Log.w(TAG, "No totalAllocatedDays field found.");
                     }
 
                     if (documentSnapshot.contains("totalUsedDays")) {
-                        totalUsedDays.setValue(documentSnapshot.getLong("totalUsedDays").intValue());
+                        totalUsedDays.setValue(documentSnapshot
+                                .getLong("totalUsedDays").intValue());
                     } else {
                         Log.w(TAG, "No totalUsedDays field found.");
                     }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +25,12 @@ import com.example.sprintproject.view.forum.ForumActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LocationActivity extends AppCompatActivity {
@@ -53,6 +58,15 @@ public class LocationActivity extends AppCompatActivity {
         Button calculateDays = findViewById(R.id.calculateVacationTime);
         mAuth = FirebaseAuth.getInstance();
         db = FirestoreManager.getInstance().getFirestore();
+
+        // retrieve user's destinations
+        destinationContainer = findViewById(R.id.destinationContainer);
+
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String userId = firebaseUser.getUid();
+            fetchUserDestinations(userId);
+        }
 
         calculateDays.setOnClickListener(v -> {
             android.app.AlertDialog.Builder builder =
@@ -94,7 +108,6 @@ public class LocationActivity extends AppCompatActivity {
                     return;
                 }
                 // calculate the missing value based on the provided inputs and update db
-                FirebaseUser firebaseUser = mAuth.getCurrentUser();
                 try {
                     if (!startDate.isEmpty() && !endDate.isEmpty()) {
                         // dates are provided, calculate duration
@@ -166,6 +179,51 @@ public class LocationActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+    private void displayDestinations(List<Map<String, Object>> destinations) {
+        destinationContainer.removeAllViews();
+        Log.d("LocationActivity", "Displaying destinations: " + destinations);
+
+        for (Map<String, Object> destination : destinations) {
+            // create a TextView for each destination
+            TextView destinationView = new TextView(this);
+            String displayText = "Location: " + destination.get("location") +
+                    "\nStart Date: " + destination.get("startDate") +
+                    " End Date: " + destination.get("endDate");
+            destinationView.setText(displayText);
+            destinationContainer.addView(destinationView);
+        }
+    }
+
+    private void fetchUserDestinations(String userId) {
+        Log.d("LocationActivity", "Fetching destinations for user: " + userId);
+        db.collection("destinations")
+                .whereEqualTo("userId", userId)
+                .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
+                .limit(5)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Map<String, Object>> destinations = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> destinationData = new HashMap<>();
+                            destinationData.put("destinationID", document.getId());
+                            destinationData.put("duration", document.getLong("duration"));
+                            destinationData.put("endDate", document.getString("endDate"));
+                            destinationData.put("location", document.getString("location"));
+                            destinationData.put("startDate", document.getString("startDate"));
+                            destinationData.put("userId", document.getString("userId"));
+                            destinations.add(destinationData);
+                        }
+                        Log.d("LocationActivity", "Destinations fetched: " + destinations);
+                        displayDestinations(destinations);
+                    } else {
+                        Log.w("Firestore", "Error getting documents.", task.getException());
+                    }
+                });
+    }
+
+
+
     public static int calculateDuration(String startDate, String endDate)
             throws java.text.ParseException {
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
@@ -194,19 +252,19 @@ public class LocationActivity extends AppCompatActivity {
     public void updateUserData(String userId, String startDate,
                                String endDate, int totalAllocatedDays) {
 
-        // Create a map to hold the fields you want to update
+        // create a map to hold the fields you want to update
         Map<String, Object> updates = new HashMap<>();
         updates.put("startDate", startDate);
         updates.put("endDate", endDate);
         updates.put("totalAllocatedDays", totalAllocatedDays);
 
-        // Update the document with the given ID
+        // update the document with the given ID
         db.collection("Users")
                 .document(userId)
                 .update(updates)
                 .addOnSuccessListener(aVoid -> {
-                    // Successfully updated
-                    Log.d("Firestore", "Traveler data updated successfully.");
+                    // successfully updated
+                    Log.d("Firestore", "User data updated successfully.");
 
                 })
                 .addOnFailureListener(e -> {

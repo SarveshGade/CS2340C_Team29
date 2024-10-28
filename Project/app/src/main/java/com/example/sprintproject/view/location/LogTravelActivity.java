@@ -49,7 +49,7 @@ public class LogTravelActivity extends AppCompatActivity {
             }
         });
 
-        // Observe the error message LiveData
+        // observe the error message LiveData
         viewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
@@ -85,5 +85,7 @@ public class LogTravelActivity extends AppCompatActivity {
         String endDate = endDateEditText.getText().toString();
 
         viewModel.saveDestination(location, startDate, endDate);
+        Intent intent = new Intent(LogTravelActivity.this, LocationActivity.class);
+        startActivity(intent);
     }
 }
