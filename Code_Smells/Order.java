@@ -24,7 +24,7 @@ public class Order {
                 // no discount
                 break;
         }
-        return price
+        return price;
     }
     public double calculateTax(Item item) {
         if (item instanceof TaxableItem) {
