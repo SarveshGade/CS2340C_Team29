@@ -4,6 +4,7 @@ public class Order {
     private List<Item> items;
     private String customerName;
     private String customerEmail;
+    private boolean hasGiftCard;
 
     public Order(List<Item> items, String customerName, String customerEmail) {
         this.items = items;
@@ -11,7 +12,7 @@ public class Order {
         this.customerEmail = customerEmail;
     }
 
-    public double applyDiscounts() {
+    public double applyDiscounts(Item item) {
         double price = item.getPrice();
         switch (item.getDiscountType()) {
             case PERCENTAGE:
@@ -48,7 +49,7 @@ public class Order {
     }
 
     private double applyGiftCardDiscount(double total) {
-        if (hasGiftCard()) {
+        if (this.hasGiftCard) {
             total -= 10.0; // subtract $10 for gift card
         }
         return total;
