@@ -11,35 +11,54 @@ public class Order {
         this.customerEmail = customerEmail;
     }
 
+    public double applyDiscounts() {
+        double price = item.getPrice();
+        switch (item.getDiscountType()) {
+            case PERCENTAGE:
+                price -= item.getDiscountAmount() * price;
+                break;
+            case AMOUNT:
+                price -= item.getDiscountAmount();
+                break;
+            default:
+                // no discount
+                break;
+        }
+        return price
+    }
+    public double calculateTax(Item item) {
+        if (item instanceof TaxableItem) {
+            TaxableItem taxableItem = (TaxableItem) item;
+            double tax = taxableItem.getTaxRate() / 100.0 * item.getPrice();
+            return tax;
+        }
+        return 0.0;
+    }
+
     public double calculateTotalPrice() {
     	double total = 0.0;
     	for (Item item : items) {
-        	double price = item.getPrice();
-        	switch (item.getDiscountType()) {
-            	case PERCENTAGE:
-                	price -= item.getDiscountAmount() * price;
-                	break;
-            	case AMOUNT:
-                	price -= item.getDiscountAmount();
-                	break;
-            	default:
-                	// no discount
-                	break;
-        	}
+        	double price = applyDiscounts(item);
         	total += price * item.getQuantity();
-       	    if (item instanceof TaxableItem) {
-                TaxableItem taxableItem = (TaxableItem) item;
-                double tax = taxableItem.getTaxRate() / 100.0 * item.getPrice();
-                total += tax;
-            }
+            total += calculateTax(item);
         }
-    	if (hasGiftCard()) {
-        	total -= 10.0; // subtract $10 for gift card
-    	}
-    	if (total > 100.0) {
-        	total *= 0.9; // apply 10% discount for orders over $100
-    	}
+        total = applyGiftCardDiscount(total);
+        total = applyLargeOrderDiscount(total);
     	return total;
+    }
+
+    private double applyGiftCardDiscount(double total) {
+        if (hasGiftCard()) {
+            total -= 10.0; // subtract $10 for gift card
+        }
+        return total;
+    }
+
+    private double applyLargeOrderDiscount(double total) {
+        if (total > 100.0) {
+            total *= 0.9; // apply 10% discount for orders over $100
+        }
+        return total;
     }
 
     public void sendConfirmationEmail() {
@@ -83,7 +102,7 @@ public class Order {
     public boolean hasGiftCard() {
         boolean has_gift_card = false;
         for (Item item : items) {
-            if (item instanceof GiftCardItem) {
+            if (item.getName().equals("Gift Card")) {
                 has_gift_card = true;
                 break;
             }
