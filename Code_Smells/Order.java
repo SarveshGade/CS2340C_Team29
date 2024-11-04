@@ -64,7 +64,7 @@ public class Order {
 
     public void sendConfirmationEmail() {
         double totalPrice = calculateTotalPrice();
-        EmailSender.sendOrderConfirmation(customerEmail, customerName, items, totalPrice);
+        EmailSender.sendOrderConfirmation(this, totalPrice);
     }
 
 
