@@ -10,6 +10,7 @@ public class Order {
         this.items = items;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
+        this.hasGiftCard = checkForGiftCard();
     }
 
     public double applyDiscounts(Item item) {
@@ -39,13 +40,18 @@ public class Order {
     public double calculateTotalPrice() {
     	double total = 0.0;
     	for (Item item : items) {
-        	double price = applyDiscounts(item);
-        	total += price * item.getQuantity();
-            total += calculateTax(item);
+            total += calculateItemTotal(item);
         }
+
         total = applyGiftCardDiscount(total);
         total = applyLargeOrderDiscount(total);
     	return total;
+    }
+
+    private double calculateItemTotal(Item item) {
+        double priceAfterDiscount = applyDiscounts(item);
+        double totalTax = calculateTax(item);
+        return (priceAfterDiscount + totalTax) * item.getQuantity();
     }
 
     private double applyGiftCardDiscount(double total) {
@@ -65,15 +71,6 @@ public class Order {
     public void sendConfirmationEmail() {
         double totalPrice = calculateTotalPrice();
         EmailSender.sendOrderConfirmation(this, totalPrice);
-    }
-
-
-    public void addItem(Item item) {
-        items.add(item);
-    }
-
-    public void removeItem(Item item) {
-        items.remove(item);
     }
 
     public List<Item> getItems() {
@@ -100,15 +97,31 @@ public class Order {
         this.customerEmail = customerEmail;
     }
 
-    public boolean hasGiftCard() {
-        boolean has_gift_card = false;
+    private boolean checkForGiftCard() {
         for (Item item : items) {
             if (item.getName().equals("Gift Card")) {
-                has_gift_card = true;
-                break;
+                return true;
             }
         }
-        return has_gift_card;
+        return false;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+        if (item.getName().equals("Gift Card")) {
+            hasGiftCard = true;
+        }
+    }
+
+    public void removeItem(Item item) {
+        items.remove(item);
+        if (item.getName().equals("Gift Card")) {
+            hasGiftCard = checkForGiftCard();
+        }
+    }
+
+    public boolean hasGiftCard() {
+        return hasGiftCard;
     }
 
    public void printOrder() {
