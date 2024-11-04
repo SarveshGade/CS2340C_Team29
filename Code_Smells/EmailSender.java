@@ -1,14 +1,14 @@
 import java.util.List;
 
 public class EmailSender {
-    public static void sendOrderConfirmation(String customerEmail, String customerName, List<Item> items, double totalPrice) {
-        String message = "Thank you for your order! " + customerName + "!\n\n" +
+    public static void sendOrderConfirmation(Order order, double totalPrice) {
+        String message = "Thank you for your order! " + order.getCustomerName() + "!\n\n" +
                 "Your order:\n";
-        for (Item item : items) {
+        for (Item item : order.getItems()) {
             message += item.getName() + " - " + item.getPrice() + "\n";
         }
         message += "Total: " + totalPrice;
-        sendEmail(customerEmail, "Here is your Order Confirmation!", message);
+        sendEmail(order.getCustomerEmail(), "Here is your Order Confirmation!", message);
     }
     public static void sendEmail(String customerEmail, String subject, String message){
         System.out.println("Email to: " + customerEmail);
