@@ -2,12 +2,8 @@
 public class TaxableItem extends Item {
     private double taxRate = 7;
     
-    public TaxableItem(Item toTax){
-        this.setName(toTax.getName());
-        this.setPrice(toTax.getPrice());
-        this.setQuantity(toTax.getQuantity());
-        this.setDiscountType(toTax.getDiscountType());
-        this.setDiscountAmount(toTax.getDiscountAmount());
+    public TaxableItem(Item toTax) {
+        super(toTax.getName(), toTax.getPrice(), toTax.getQuantity(), toTax.getDiscountType(), toTax.getDiscountAmount());
     }
 
     public double getTaxRate(){
