@@ -177,7 +177,7 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
         //
         //  Collections.sort(reservations, (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
 
-
+        reservationList.removeAllViews();
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                             "MMM dd, yyyy hh:mm a", Locale.getDefault());
 
