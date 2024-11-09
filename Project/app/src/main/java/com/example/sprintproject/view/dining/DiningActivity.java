@@ -71,7 +71,6 @@ public class DiningActivity extends AppCompatActivity {
         dateTimeButton.setText("Select Date and Time");
         dateTimeButton.setOnClickListener(v -> selectDateTime());
 
-        // Layout to hold the inputs
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(locationInput);

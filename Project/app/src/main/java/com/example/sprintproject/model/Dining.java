@@ -3,11 +3,10 @@ import java.util.Date;
 
 public class Dining {
     private String location;
-    private Date dateTime; // Make sure this is a `Date` type
+    private Date dateTime;
     private String website;
     private String userId;
 
-    // Default constructor for Firestore
     public Dining() {}
 
     public Dining(String location, Date dateTime, String website, String userId) {
@@ -17,7 +16,6 @@ public class Dining {
         this.userId = userId;
     }
 
-    // Getters and setters
     public String getLocation() {
         return location;
     }
