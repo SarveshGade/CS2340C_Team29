@@ -21,9 +21,11 @@ public class Accomodation {
         this.roomType = roomType;
         this.userId = userId;
     }
+
     public String getLocation() {
         return location;
     }
+
     public String getRoomType() {
         return roomType;
     }
@@ -55,6 +57,7 @@ public class Accomodation {
     public void setCheckOutDate(String checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
+
     public String getUserId() {
         return userId;
     }
@@ -62,7 +65,6 @@ public class Accomodation {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
 
     public static boolean isValidDate(String dateStr) {
         try {
