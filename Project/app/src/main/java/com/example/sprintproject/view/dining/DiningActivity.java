@@ -21,9 +21,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Dining;
+import com.example.sprintproject.model.ReservationsObserver;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,12 +35,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class DiningActivity extends AppCompatActivity {
+public class DiningActivity extends AppCompatActivity implements ReservationsObserver {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Date selectedDateTime;
     private Button dateTimeButton;
     private LinearLayout reservationList;
+    private List<ReservationsObserver> observers = new ArrayList<>();
+    private List<Dining> reservations = new ArrayList<>();
 
 
     @Override
@@ -52,6 +56,7 @@ public class DiningActivity extends AppCompatActivity {
             return insets;
         });
 
+        addObserver(this);
         reservationList = findViewById(R.id.reservationList);
 
         Button reservationButton = findViewById(R.id.addReservation);
@@ -86,7 +91,8 @@ public class DiningActivity extends AppCompatActivity {
                     String website = websiteInput.getText().toString().trim();
 
                     if (location.isEmpty() || website.isEmpty() || selectedDateTime == null) {
-                        Toast.makeText(DiningActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DiningActivity.this,
+                                "All fields are required", Toast.LENGTH_SHORT).show();
                     } else {
                         saveReservation(location, selectedDateTime, website);
                     }
@@ -108,52 +114,106 @@ public class DiningActivity extends AppCompatActivity {
                 selectedDateTime = calendar.getTime();
 
                 // Format and display selected date and time on the button
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+                SimpleDateFormat dateFormat
+                        = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
                 dateTimeButton.setText(dateFormat.format(selectedDateTime));
-            }, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), false).show(); // Use 12-hour format
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }, calendar.get(Calendar.HOUR),
+                    calendar.get(Calendar.MINUTE), false).show(); // Use 12-hour format
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void saveReservation(String location, Date dateTime, String website) {
-        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        String userId = mAuth.getCurrentUser() != null
+                ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Dining").add(new Dining(location, dateTime, website, userId))
-                .addOnSuccessListener(aVoid -> Toast.makeText(DiningActivity.this, "Reservation added successfully!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this, "Error adding reservation", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> Toast.makeText(DiningActivity.this,
+                        "Reservation added successfully!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
+                                "Error adding reservation", Toast.LENGTH_SHORT).show());
         Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
         startActivity(intent);
     }
+
     private void loadReservations() {
-        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        String userId = mAuth.getCurrentUser() != null
+                ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Dining")
                 .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    reservationList.removeAllViews();  // Clear existing items
+                    reservations.clear();  // Clear existing items
 
-                    List<Dining> reservations = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         Dining dining = doc.toObject(Dining.class);
                         reservations.add(dining);
                     }
 
-                    Collections.sort(reservations, (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
+                    Collections.sort(reservations,
+                            (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
 
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
-
-                    for (Dining reservation : reservations) {
-                        TextView reservationView = new TextView(this);
-                        reservationView.setLayoutParams(new LinearLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        reservationView.setPadding(0, 16, 0, 16);
-                        reservationView.setText(String.format(
-                                "Location: %s\nDate and Time: %s\nWebsite: %s",
-                                reservation.getLocation(),
-                                dateFormat.format(reservation.getDateTime()),
-                                reservation.getWebsite()
-                        ));
-                        reservationList.addView(reservationView);
-                    }
+                    // Notify observers that data has been updated
+                    notifyObservers(reservations);
                 })
-                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this, "Error loading reservations", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
+                        "Error loading reservations", Toast.LENGTH_SHORT).show());
+    }
+
+
+    public void onReservationsLoaded(List<Dining> reservations) {
+        //        String userId = mAuth.getCurrentUser() != null
+        //        ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        //        db.collection("Dining")
+        //                .whereEqualTo("userId", userId)
+        //                .get()
+        //                .addOnSuccessListener(querySnapshot -> {
+        //                    reservationList.removeAllViews();  // Clear existing items
+        //
+        //
+        //                    for (QueryDocumentSnapshot doc : querySnapshot) {
+        //                        Dining dining = doc.toObject(Dining.class);
+        //                        reservations.add(dining);
+        //                    }
+        //
+        //  Collections.sort(reservations, (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            "MMM dd, yyyy hh:mm a", Locale.getDefault());
+
+        for (Dining reservation : reservations) {
+            TextView reservationView = new TextView(this);
+            reservationView.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            reservationView.setPadding(0, 16, 0, 16);
+            reservationView.setText(String.format(
+                    "Location: %s\nDate and Time: %s\nWebsite: %s",
+                    reservation.getLocation(),
+                    dateFormat.format(reservation.getDateTime()),
+                    reservation.getWebsite()
+            ));
+            reservationList.addView(reservationView);
+        }
+    }
+
+
+
+    // Register an observer
+    public void addObserver(ReservationsObserver observer) {
+        observers.add(observer);
+    }
+
+    // Unregister an observer
+    public void removeObserver(ReservationsObserver observer) {
+        observers.remove(observer);
+    }
+
+    // Notify all observers
+    private void notifyObservers(List<Dining> reservations) {
+        for (ReservationsObserver observer : observers) {
+            observer.onReservationsLoaded(reservations);
+        }
     }
 }
+
+
