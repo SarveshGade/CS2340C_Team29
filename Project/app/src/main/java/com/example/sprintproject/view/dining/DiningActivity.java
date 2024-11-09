@@ -21,8 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Dining;
-import com.example.sprintproject.view.location.LocationActivity;
-import com.example.sprintproject.view.location.LogTravelActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
