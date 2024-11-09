@@ -22,4 +22,5 @@
     <string name="calculate_vacation_time">Calculate Vacation Time</string>
     <string name="log_travel">Log Travel</string>
     <string name="no_days_planned">0 days planned</string>
+    <string name="reservation">Reservation</string>
 </resources>
