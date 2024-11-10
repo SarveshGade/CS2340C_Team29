@@ -211,7 +211,6 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     public void onAccomodationsLoaded(List<Accomodation> accommodations) {
         accommodationsList.removeAllViews();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        Date currentDate = new Date(); // Current date for comparison
 
         for (Accomodation accommodation : accommodations) {
             TextView accommodationView = new TextView(this);
@@ -223,17 +222,15 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
 
             String checkInStr = checkIn != null ? dateFormat.format(checkIn) : "Invalid Date";
             String checkOutStr = checkOut != null ? dateFormat.format(checkOut) : "Invalid Date";
-            String status = (checkIn != null && checkIn.before(currentDate)) ? "Status: Past" : "Status: Upcoming";
 
             accommodationView.setText(String.format(
                     "Location: %s\nCheck-in: %s\nCheck-out: %s\n" +
-                            "Number of Rooms: %s\nRoom Type: %s\n%s",
+                            "Number of Rooms: %s\nRoom Type: %s",
                     accommodation.getLocation(),
                     checkInStr,
                     checkOutStr,
                     accommodation.getNumRooms(),
-                    accommodation.getRoomType(),
-                    status
+                    accommodation.getRoomType()
             ));
             accommodationsList.addView(accommodationView);
         }
