@@ -217,12 +217,18 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             accommodationView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             accommodationView.setPadding(0, 16, 0, 16);
+            Date checkIn = accommodation.getCheckInDate();
+            Date checkOut = accommodation.getCheckOutDate();
+
+            String checkInStr = checkIn != null ? dateFormat.format(checkIn) : "Invalid Date";
+            String checkOutStr = checkOut != null ? dateFormat.format(checkOut) : "Invalid Date";
+
             accommodationView.setText(String.format(
                     "Location: %s\nCheck-in: %s\nCheck-out: %s\n" +
                             "Number of Rooms: %s\nRoom Type: %s",
                     accommodation.getLocation(),
-                    dateFormat.format(accommodation.getCheckInDate()),
-                    dateFormat.format(accommodation.getCheckOutDate()),
+                    checkInStr,
+                    checkOutStr,
                     accommodation.getNumRooms(),
                     accommodation.getRoomType()
             ));

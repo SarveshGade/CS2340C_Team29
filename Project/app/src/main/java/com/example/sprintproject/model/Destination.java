@@ -8,7 +8,7 @@ import java.util.Date;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class Destination extends Reservable{
+public class Destination {
     private String location;
     private String startDate;
     private String endDate;
