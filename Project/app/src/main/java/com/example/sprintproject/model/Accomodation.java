@@ -15,6 +15,9 @@ public class Accomodation extends Reservable{
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    public Accomodation() {
+
+    }
     public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomType, String userId) {
         this.location = location;
         this.checkInDate = checkInDate;

@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accomodation;
 import com.example.sprintproject.model.AccomodationsObserver;
+import com.example.sprintproject.model.Dining;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
@@ -32,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -174,27 +176,20 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void saveAccommodation(String location, Date checkIn, Date checkOut,
-                                   int numRooms, String roomType) {
-        String userId = mAuth.getCurrentUser() != null ?
-                mAuth.getCurrentUser().getUid() : "unknown_user";
-
-        Accomodation accommodation = new Accomodation(location, checkIn, checkOut,
-                numRooms, roomType, userId);
-
-        db.collection("accommodation").add(accommodation)
+    private void saveAccommodation(String location, Date checkIn, Date checkOut, int numRooms, String roomType) {
+        String userId = mAuth.getCurrentUser() != null
+                ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        db.collection("accommodation").add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, userId))
                 .addOnSuccessListener(aVoid -> Toast.makeText(AccommodationsActivity.this,
                         "Accommodation added successfully!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
                         "Error adding accommodation", Toast.LENGTH_SHORT).show());
-
         Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
         startActivity(intent);
     }
 
     private void loadAccommodations() {
-        String userId = mAuth.getCurrentUser() != null ?
-                mAuth.getCurrentUser().getUid() : "unknown_user";
+        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("accommodation")
                 .whereEqualTo("userId", userId)
                 .get()
@@ -206,9 +201,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                         accommodations.add(accommodation);
                     }
 
-                    Collections.sort(accommodations,
-                            (a, b) -> a.getCheckInDate().compareTo(b.getCheckInDate()));
-
+                    Collections.sort(accommodations, (a, b) -> a.getCheckInDate().compareTo(b.getCheckInDate()));
                     notifyObservers(accommodations);
                 })
                 .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
@@ -226,7 +219,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             accommodationView.setPadding(0, 16, 0, 16);
             accommodationView.setText(String.format(
                     "Location: %s\nCheck-in: %s\nCheck-out: %s\n" +
-                            "Number of Rooms: %d\nRoom Type: %s",
+                            "Number of Rooms: %s\nRoom Type: %s",
                     accommodation.getLocation(),
                     dateFormat.format(accommodation.getCheckInDate()),
                     dateFormat.format(accommodation.getCheckOutDate()),
