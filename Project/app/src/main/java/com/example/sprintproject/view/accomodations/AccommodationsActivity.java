@@ -52,6 +52,9 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     private LinearLayout accommodationsList;
     private List<AccomodationsObserver> observers = new ArrayList<>();
     private List<Accomodation> accommodations = new ArrayList<>();
+    private Button sortCheckInButton;
+    private Button sortCheckOutButton;
+    private boolean sortByCheckIn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,18 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
         ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
         ImageButton forumButton = findViewById(R.id.forumButton);
         Button addAccommodationButton = findViewById(R.id.addAccommodation);
+        sortCheckInButton = findViewById(R.id.sortCheckInButton);
+        sortCheckOutButton = findViewById(R.id.sortCheckOutButton);
+
+        sortCheckInButton.setOnClickListener(v -> {
+            sortByCheckIn = true;
+            sortAccommodations();
+        });
+
+        sortCheckOutButton.setOnClickListener(v -> {
+            sortByCheckIn = false;
+            sortAccommodations();
+        });
         addAccommodationButton.setOnClickListener(v -> showAccommodationDialog());
         loadAccommodations();
 
@@ -96,6 +111,17 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             Intent intent = new Intent(AccommodationsActivity.this, ForumActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void sortAccommodations() {
+        Collections.sort(accommodations, (a, b) -> {
+            if (sortByCheckIn) {
+                return a.getCheckInDate().compareTo(b.getCheckInDate());
+            } else {
+                return a.getCheckOutDate().compareTo(b.getCheckOutDate());
+            }
+        });
+        notifyObservers(accommodations);
     }
 
     private void showAccommodationDialog() {
@@ -201,8 +227,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                         accommodations.add(accommodation);
                     }
 
-                    Collections.sort(accommodations, (a, b) -> a.getCheckInDate().compareTo(b.getCheckInDate()));
-                    notifyObservers(accommodations);
+                    sortAccommodations();
                 })
                 .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
                         "Error loading accommodations", Toast.LENGTH_SHORT).show());

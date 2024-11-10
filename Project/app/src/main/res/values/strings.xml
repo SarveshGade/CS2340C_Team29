@@ -24,4 +24,8 @@
     <string name="no_days_planned">0 days planned</string>
     <string name="reservation">Reservation</string>
     <string name="AddAccomodation">Add Accommodation</string>
+    <string name="sort_by_check_in">Sort by Check-in</string>
+    <string name="sort_by_check_out">Sort by Check-out</string>
+    <string name="sort_by_date">Sort by Date</string>
+    <string name="sort_by_time">Sort by Time</string>
 </resources>
