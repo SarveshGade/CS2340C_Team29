@@ -7,7 +7,7 @@ public class Dining {
     private String website;
     private String userId;
 
-    public Dining() {}
+    public Dining() { }
 
     public Dining(String location, Date dateTime, String website, String userId) {
         this.location = location;
