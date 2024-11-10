@@ -22,66 +22,33 @@
         android:padding="16dp" />
 
 
-    <EditText
-        android:id="@+id/location"
-        android:hint="Location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/accommodationsHeader"
+        app:layout_constraintBottom_toTopOf="@id/addAccommodation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <EditText
-        android:id="@+id/checkInEditText"
-        android:hint="Check-in Date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/location"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:id="@+id/checkOutEditText"
-        android:hint="Check-out Date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/checkInEditText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:id="@+id/numberOfRooms"
-        android:hint="Number of Rooms"
-        android:inputType="number"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/checkOutEditText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:id="@+id/roomTypes"
-        android:hint="Room Type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/numberOfRooms"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        <LinearLayout
+            android:id="@+id/accommodationList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" />
+    </ScrollView>
 
     <Button
-        android:id="@+id/addAccommodationButton"
-        android:text="Add Accommodation"
+        android:id="@+id/addAccommodation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/roomTypes"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/AddAccomodation"
+        android:backgroundTint="@color/orange"
+        android:layout_marginBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintBottom_toTopOf="@id/navbar"
+        app:layout_constraintHorizontal_bias="0.5" />
 
     <include
         android:id="@+id/navbar"
