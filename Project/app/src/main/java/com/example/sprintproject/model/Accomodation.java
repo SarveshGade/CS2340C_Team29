@@ -1,19 +1,21 @@
 package com.example.sprintproject.model;
 
+import java.util.Date;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class Accomodation {
+public class Accomodation extends Reservable{
     private String location;
-    private String checkInDate;
-    private String checkOutDate;
+    private Date checkInDate;
+    private Date checkOutDate;
     private int numRooms;
     private String roomType;
     private String userId;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    public Accomodation(String location, String checkInDate, String checkOutDate, int numRooms, String roomType, String userId) {
+    public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomType, String userId) {
         this.location = location;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
@@ -34,11 +36,11 @@ public class Accomodation {
         this.roomType = roomType;
     }
 
-    public String getCheckInDate() {
+    public Date getCheckInDate() {
         return checkInDate;
     }
 
-    public String getCheckOutDate() {
+    public Date getCheckOutDate() {
         return checkOutDate;
     }
 
@@ -50,11 +52,11 @@ public class Accomodation {
         this.location = location;
     }
 
-    public void setCheckInDate(String checkInDate) {
+    public void setCheckInDate(Date checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public void setCheckOutDate(String checkOutDate) {
+    public void setCheckOutDate(Date checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 
