@@ -25,9 +25,9 @@ import com.example.sprintproject.model.Dining;
 
 import com.example.sprintproject.model.ReservationsObserver;
 
-import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.location.LogTravelActivity;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 
