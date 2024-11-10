@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,15 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Dining;
+
 import com.example.sprintproject.model.ReservationsObserver;
+
+import com.example.sprintproject.view.accomodations.AccommodationsActivity;
+import com.example.sprintproject.view.forum.ForumActivity;
+import com.example.sprintproject.view.location.LocationActivity;
+import com.example.sprintproject.view.location.LogTravelActivity;
+import com.example.sprintproject.view.logistics.LogisticsActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,11 +67,40 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
 
         addObserver(this);
         reservationList = findViewById(R.id.reservationList);
-
+        ImageButton logisticsButton = findViewById(R.id.logisticsButton);
+        ImageButton locationButton = findViewById(R.id.locationButton);
+        ImageButton diningButton = findViewById(R.id.diningButton);
+        ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
+        ImageButton forumButton = findViewById(R.id.forumButton);
         Button reservationButton = findViewById(R.id.addReservation);
         reservationButton.setOnClickListener(v -> showReservationDialog());
         loadReservations();
 
+        logisticsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DiningActivity.this,
+                    LogisticsActivity.class);
+            startActivity(intent);
+        });
+        locationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DiningActivity.this,
+                    LocationActivity.class);
+            startActivity(intent);
+        });
+        diningButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DiningActivity.this,
+                    DiningActivity.class);
+            startActivity(intent);
+        });
+        accommodationsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DiningActivity.this,
+                    AccommodationsActivity.class);
+            startActivity(intent);
+        });
+        forumButton.setOnClickListener(v -> {
+            Intent intent = new Intent(DiningActivity.this,
+                    ForumActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void showReservationDialog() {

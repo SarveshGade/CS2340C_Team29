@@ -196,9 +196,9 @@ public class LocationActivity extends AppCompatActivity {
 
             // Alternate background color of rows
             if (i % 2 == 0) {
-                destinationLayout.setBackgroundColor(Color.parseColor("#f0f0f0")); // Light gray for even rows
+                destinationLayout.setBackgroundColor(Color.parseColor("#f0f0f0"));
             } else {
-                destinationLayout.setBackgroundColor(Color.parseColor("#ffffff")); // White for odd rows
+                destinationLayout.setBackgroundColor(Color.parseColor("#ffffff"));
             }
 
             // Create and set the "Destination" TextView
@@ -250,7 +250,7 @@ public class LocationActivity extends AppCompatActivity {
                         destinations.sort((d1, d2) -> {
                             String date1 = (String) d1.get("startDate");
                             String date2 = (String) d2.get("startDate");
-                            return date2.compareTo(date1); // Compare in reverse for descending order
+                            return date2.compareTo(date1); //descending order
                         });
 
                         // Take the last 5 trips (most recent first)
