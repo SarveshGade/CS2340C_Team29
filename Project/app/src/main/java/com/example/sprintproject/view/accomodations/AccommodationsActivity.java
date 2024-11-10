@@ -195,7 +195,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     private void loadAccommodations() {
         String userId = mAuth.getCurrentUser() != null ?
                 mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Accommodations")
+        db.collection("accommodation")
                 .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
