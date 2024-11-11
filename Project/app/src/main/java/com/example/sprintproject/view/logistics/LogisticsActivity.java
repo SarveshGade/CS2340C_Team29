@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,29 @@ public class LogisticsActivity extends AppCompatActivity {
 
         Button createGraphButton = findViewById(R.id.button_creategraph);
         createGraphButton.setOnClickListener((l) -> drawChart());
+
+        Button inviteButton = findViewById(R.id.inviteButton);
+        inviteButton.setOnClickListener(v -> {
+            android.app.AlertDialog.Builder builder =
+                    new android.app.AlertDialog.Builder(LogisticsActivity.this);
+            builder.setTitle("Invite User");
+
+            LinearLayout layout = new LinearLayout(LogisticsActivity.this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setPadding(50, 40, 50, 40);
+
+            final android.widget.EditText userEmailInput =
+                    new android.widget.EditText(LogisticsActivity.this);
+            userEmailInput.setHint("Enter Email of User to Invite");
+            layout.addView(userEmailInput);
+            builder.setView(layout);
+            builder.setPositiveButton("Invite", (dialog, which) -> {
+                String userEmail = userEmailInput.getText().toString().trim();
+                //save userEmail as invited user in database
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
+        });
 
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
