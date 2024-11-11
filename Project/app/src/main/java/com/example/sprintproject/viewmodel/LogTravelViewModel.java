@@ -30,17 +30,23 @@ public class LogTravelViewModel extends ViewModel {
 
         if (validationMessage.isEmpty()) {
             String userId = getUserId();
-            if (userId != null) {
-                Destination destination = new Destination(location, startDate, endDate, userId);
-                destinationLiveData.setValue(destination);
-                destination.saveToFirestore();
+            db.collection("Users").document(userId)
+                    .get()
+                    .addOnSuccessListener(userDoc -> {
+                        String tripID = userDoc.getString("tripID");
 
-                updateTotalUsedDays(userId, destination.getDuration());
+                        if (tripID != null) {
+                            Destination destination = new Destination(location, startDate, endDate, tripID);
+                            destinationLiveData.setValue(destination);
+                            destination.saveToFirestore();
 
-                errorMessageLiveData.setValue(null); // Clear any previous error message
-            } else {
-                errorMessageLiveData.setValue("User is not authenticated.");
-            }
+                            updateTotalUsedDays(userId, destination.getDuration());
+
+                            errorMessageLiveData.setValue(null); // Clear any previous error message
+                        } else {
+                            errorMessageLiveData.setValue("User is not authenticated.");
+                        }
+                    });
         } else {
             errorMessageLiveData.setValue(validationMessage);
             destinationLiveData.setValue(null); // Clear destination on error
