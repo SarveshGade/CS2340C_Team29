@@ -29,7 +29,6 @@ import com.example.sprintproject.view.forum.ForumActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -231,49 +230,69 @@ public class LocationActivity extends AppCompatActivity {
     private void fetchUserDestinations(String userId) {
         Log.d("LocationActivity", "Fetching destinations for user: " + userId);
         db.collection("Users").document(userId)
-            .get()
-            .addOnSuccessListener(userDoc -> {
-                String tripID = userDoc.getString("tripID");
-                db.collection("destinations")
-                        .whereEqualTo("tripID", tripID)
-                        .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
-                        .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                List<Map<String, Object>> destinations = new ArrayList<>();
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Map<String, Object> destinationData = new HashMap<>();
-                                    destinationData.put("destinationID", document.getId());
-                                    destinationData.put("duration", document.getLong("duration"));
-                                    destinationData.put("endDate", document.getString("endDate"));
-                                    destinationData.put("location", document.getString("location"));
-                                    destinationData.put("startDate",
-                                            document.getString("startDate"));
-                                    destinationData.put("userId", document.getString("userId"));
-                                    destinations.add(destinationData);
-                                }
-                                // Sort by startDate in descending order
-                                destinations.sort((d1, d2) -> {
-                                    String date1 = (String) d1.get("startDate");
-                                    String date2 = (String) d2.get("startDate");
-                                    return date2.compareTo(date1); //descending order
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    String tripID = userDoc.getString("tripID");
+                    if (tripID != null) {
+                        Log.d("LocationActivity", "Trip ID fetched: " + tripID);
+                        db.collection("destinations")
+                                .whereEqualTo("tripID", tripID)
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        List<Map<String, Object>> destinations = new ArrayList<>();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Map<String, Object> destinationData = new HashMap<>();
+                                            destinationData.put("destinationID", document.getId());
+                                            destinationData.put("duration",
+                                                    document.getLong("duration"));
+                                            destinationData.put("endDate",
+                                                    document.getString("endDate"));
+                                            destinationData.put("location",
+                                                    document.getString("location"));
+                                            destinationData.put("startDate",
+                                                    document.getString("startDate"));
+                                            destinationData.put("userId",
+                                                    document.getString("userId"));
+                                            destinations.add(destinationData);
+                                        }
+
+                                        // Sort by startDate in descending order
+                                        destinations.sort((d1, d2) -> {
+                                            String date1 = (String) d1.get("startDate");
+                                            String date2 = (String) d2.get("startDate");
+                                            return date2.compareTo(date1); //descending order
+                                        });
+
+                                        // Take the last 5 trips (most recent first)
+                                        if (destinations.size() > 5) {
+                                            destinations = destinations.subList(0, 5);
+                                        }
+
+                                        Log.d("LocationActivity",
+                                                "Destinations fetched: " + destinations.size());
+                                        // Display destinations if data is fetched
+                                        displayDestinations(destinations);
+                                    } else {
+                                        Log.w("LocationActivity",
+                                                "Error fetching destinations: ",
+                                                task.getException());
+                                        Toast.makeText(LocationActivity.this,
+                                                "Error fetching destinations",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 });
-
-                                // Take the last 5 trips (most recent first)
-                                if (destinations.size() > 5) {
-                                    destinations = destinations.subList(0, 5);
-                                }
-
-                                Log.d("LocationActivity", "Destinations fetched: " + destinations);
-                                displayDestinations(destinations);
-                            } else {
-                                Log.w("Firestore", "Error getting documents.", task.getException());
-                            }
-                        });
-            })
-            .addOnFailureListener(e ->
+                    } else {
+                        Log.w("LocationActivity", "Trip ID is null.");
+                        Toast.makeText(LocationActivity.this,
+                                "User does not have a trip ID", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("LocationActivity", "Error fetching user document: ", e);
                     Toast.makeText(LocationActivity.this,
-                            "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
+                            "Error retrieving user data", Toast.LENGTH_SHORT).show();
+                });
     }
 
     public static int calculateDuration(String startDate, String endDate)
