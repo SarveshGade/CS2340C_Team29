@@ -1,9 +1,4 @@
 package com.example.sprintproject.model;
-
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import java.sql.Time;
 import java.util.Date;
 
 import java.text.ParseException;
@@ -22,7 +17,8 @@ public class Accomodation {
     public Accomodation() {
 
     }
-    public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomType, String tripID) {
+    public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms,
+                        String roomType, String tripID) {
         this.location = location;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;

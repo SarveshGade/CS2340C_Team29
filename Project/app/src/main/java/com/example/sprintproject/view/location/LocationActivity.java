@@ -247,7 +247,8 @@ public class LocationActivity extends AppCompatActivity {
                                     destinationData.put("duration", document.getLong("duration"));
                                     destinationData.put("endDate", document.getString("endDate"));
                                     destinationData.put("location", document.getString("location"));
-                                    destinationData.put("startDate", document.getString("startDate"));
+                                    destinationData.put("startDate",
+                                            document.getString("startDate"));
                                     destinationData.put("userId", document.getString("userId"));
                                     destinations.add(destinationData);
                                 }
@@ -269,7 +270,7 @@ public class LocationActivity extends AppCompatActivity {
                                 Log.w("Firestore", "Error getting documents.", task.getException());
                             }
                         });
-                })
+            })
             .addOnFailureListener(e ->
                     Toast.makeText(LocationActivity.this,
                             "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());

@@ -36,7 +36,8 @@ public class LogTravelViewModel extends ViewModel {
                         String tripID = userDoc.getString("tripID");
 
                         if (tripID != null) {
-                            Destination destination = new Destination(location, startDate, endDate, tripID);
+                            Destination destination = new Destination(location,
+                                    startDate, endDate, tripID);
                             destinationLiveData.setValue(destination);
                             destination.saveToFirestore();
 

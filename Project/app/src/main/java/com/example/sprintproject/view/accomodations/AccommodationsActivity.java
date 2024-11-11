@@ -23,7 +23,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accomodation;
 import com.example.sprintproject.model.AccomodationsObserver;
-import com.example.sprintproject.model.Dining;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
@@ -33,7 +32,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,8 +163,8 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                     String numRoomsStr = numRoomsInput.getText().toString().trim();
                     String roomType = roomTypeSpinner.getSelectedItem().toString();
 
-                    if (location.isEmpty() || numRoomsStr.isEmpty() ||
-                            selectedCheckIn == null || selectedCheckOut == null) {
+                    if (location.isEmpty() || numRoomsStr.isEmpty()
+                            || selectedCheckIn == null || selectedCheckOut == null) {
                         Toast.makeText(AccommodationsActivity.this,
                                 "All fields are required", Toast.LENGTH_SHORT).show();
                     } else {
@@ -202,16 +200,20 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void saveAccommodation(String location, Date checkIn, Date checkOut, int numRooms, String roomType) {
+    private void saveAccommodation(String location, Date checkIn, Date checkOut,
+                                        int numRooms, String roomType) {
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)
                 .get()
                 .addOnSuccessListener(userDoc -> {
                     String tripID = userDoc.getString("tripID");
-                    db.collection("accommodation").add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID))
-                            .addOnSuccessListener(aVoid -> Toast.makeText(AccommodationsActivity.this,
-                                    "Accommodation added successfully!", Toast.LENGTH_SHORT).show())
+                    db.collection("accommodation").add(new Accomodation(location,
+                                    checkIn, checkOut, numRooms, roomType, tripID))
+                            .addOnSuccessListener(aVoid -> Toast.makeText(
+                                    AccommodationsActivity.this,
+                                    "Accommodation added successfully!",
+                                    Toast.LENGTH_SHORT).show())
                             .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
                                     "Error adding accommodation", Toast.LENGTH_SHORT).show());
                 });
@@ -220,7 +222,8 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     }
 
     private void loadAccommodations() {
-        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid()
+                : "unknown_user";
         db.collection("Users").document(userId)
                 .get()
                 .addOnSuccessListener(userDoc -> {
@@ -265,11 +268,12 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             String checkOutStr = checkOut != null ? dateFormat.format(checkOut) : "Invalid Date";
 
             // Determine if the reservation is past or upcoming
-            String status = (checkIn != null && checkIn.before(currentDate)) ? "Status: Past" : "Status: Upcoming";
+            String status = (checkIn != null && checkIn.before(currentDate)) ? "Status: Past"
+                    : "Status: Upcoming";
 
             accommodationView.setText(String.format(
-                    "Location: %s\nCheck-in: %s\nCheck-out: %s\n" +
-                            "Number of Rooms: %s\nRoom Type: %s\n%s",
+                    "Location: %s\nCheck-in: %s\nCheck-out: %s\n"
+                            + "Number of Rooms: %s\nRoom Type: %s\n%s",
                     accommodation.getLocation(),
                     checkInStr,
                     checkOutStr,

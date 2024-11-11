@@ -107,7 +107,8 @@ public class RegisterViewModel extends AndroidViewModel {
         db.collection("Users")
                 .document(userId)
                 .set(userMap)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Traveler data added successfully"))
+                .addOnSuccessListener(aVoid -> Log.d("Firestore",
+                        "Traveler data added successfully"))
                 .addOnFailureListener(e -> {
                     Log.w("Firestore", "Error adding traveler data", e);
                     errorMessage.setValue("Error adding traveler to Firestore.");
@@ -129,7 +130,8 @@ public class RegisterViewModel extends AndroidViewModel {
                     db.collection("Users")
                             .document(userId)
                             .update("tripID", tripID)
-                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Traveler updated with trip ID"))
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore",
+                                    "Traveler updated with trip ID"))
                             .addOnFailureListener(e -> {
                                 Log.w("Firestore", "Error updating traveler with trip ID", e);
                                 errorMessage.setValue("Error linking trip to user.");
