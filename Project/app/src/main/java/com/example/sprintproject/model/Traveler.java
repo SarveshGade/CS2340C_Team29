@@ -19,7 +19,8 @@ public class Traveler extends BaseUser implements ITraveler {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "TravelerModel"; // Tag for logging
 
-    public Traveler(String email, String password, String startDate, String endDate, String tripID) {
+    public Traveler(String email, String password, String startDate,
+                    String endDate, String tripID) {
         super(email, password);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -51,7 +52,9 @@ public class Traveler extends BaseUser implements ITraveler {
     }
 
     @Override
-    public String getTripID() { return tripID; };
+    public String getTripID() {
+        return tripID;
+    };
 
     @Override
     public int getTotalAllocatedDays() {

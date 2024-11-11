@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -229,41 +230,50 @@ public class LocationActivity extends AppCompatActivity {
 
     private void fetchUserDestinations(String userId) {
         Log.d("LocationActivity", "Fetching destinations for user: " + userId);
-        db.collection("destinations")
-                .whereEqualTo("userId", userId)
-                .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Map<String, Object>> destinations = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String, Object> destinationData = new HashMap<>();
-                            destinationData.put("destinationID", document.getId());
-                            destinationData.put("duration", document.getLong("duration"));
-                            destinationData.put("endDate", document.getString("endDate"));
-                            destinationData.put("location", document.getString("location"));
-                            destinationData.put("startDate", document.getString("startDate"));
-                            destinationData.put("userId", document.getString("userId"));
-                            destinations.add(destinationData);
-                        }
-                        // Sort by startDate in descending order
-                        destinations.sort((d1, d2) -> {
-                            String date1 = (String) d1.get("startDate");
-                            String date2 = (String) d2.get("startDate");
-                            return date2.compareTo(date1); //descending order
+        db.collection("Users").document(userId)
+            .get()
+            .addOnSuccessListener(userDoc -> {
+                String tripID = userDoc.getString("tripID");
+                db.collection("destinations")
+                        .whereEqualTo("tripID", tripID)
+                        .orderBy("startDate", Query.Direction.ASCENDING) // sort by startDate
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                List<Map<String, Object>> destinations = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Map<String, Object> destinationData = new HashMap<>();
+                                    destinationData.put("destinationID", document.getId());
+                                    destinationData.put("duration", document.getLong("duration"));
+                                    destinationData.put("endDate", document.getString("endDate"));
+                                    destinationData.put("location", document.getString("location"));
+                                    destinationData.put("startDate",
+                                            document.getString("startDate"));
+                                    destinationData.put("userId", document.getString("userId"));
+                                    destinations.add(destinationData);
+                                }
+                                // Sort by startDate in descending order
+                                destinations.sort((d1, d2) -> {
+                                    String date1 = (String) d1.get("startDate");
+                                    String date2 = (String) d2.get("startDate");
+                                    return date2.compareTo(date1); //descending order
+                                });
+
+                                // Take the last 5 trips (most recent first)
+                                if (destinations.size() > 5) {
+                                    destinations = destinations.subList(0, 5);
+                                }
+
+                                Log.d("LocationActivity", "Destinations fetched: " + destinations);
+                                displayDestinations(destinations);
+                            } else {
+                                Log.w("Firestore", "Error getting documents.", task.getException());
+                            }
                         });
-
-                        // Take the last 5 trips (most recent first)
-                        if (destinations.size() > 5) {
-                            destinations = destinations.subList(0, 5);
-                        }
-
-                        Log.d("LocationActivity", "Destinations fetched: " + destinations);
-                        displayDestinations(destinations);
-                    } else {
-                        Log.w("Firestore", "Error getting documents.", task.getException());
-                    }
-                });
+            })
+            .addOnFailureListener(e ->
+                    Toast.makeText(LocationActivity.this,
+                            "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
     }
 
     public static int calculateDuration(String startDate, String endDate)

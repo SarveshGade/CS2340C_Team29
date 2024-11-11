@@ -17,12 +17,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Traveler;
-import com.example.sprintproject.model.Trip;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 import com.example.sprintproject.viewmodel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
-
-import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 

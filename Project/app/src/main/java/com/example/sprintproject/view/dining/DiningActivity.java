@@ -28,7 +28,6 @@ import com.example.sprintproject.model.ReservationsObserver;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
-import com.example.sprintproject.view.location.LogTravelActivity;
 import com.example.sprintproject.view.logistics.LogisticsActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,7 +86,8 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
                 aCal.setTime(a.getDateTime());
                 Calendar bCal = Calendar.getInstance();
                 bCal.setTime(b.getDateTime());
-                return Integer.compare(aCal.get(Calendar.HOUR_OF_DAY), bCal.get(Calendar.HOUR_OF_DAY));
+                return Integer.compare(aCal.get(Calendar.HOUR_OF_DAY),
+                        bCal.get(Calendar.HOUR_OF_DAY));
             });
             notifyObservers(reservations);
         });
@@ -186,13 +186,16 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
         db.collection("Users").document(userId)
                 .get()
                 .addOnSuccessListener(userDoc -> {
-                            String tripID = userDoc.getString("tripID");
-                            db.collection("Dining").add(new Dining(location, dateTime, website, tripID))
-                                    .addOnSuccessListener(aVoid -> Toast.makeText(DiningActivity.this,
-                                            "Reservation added successfully!", Toast.LENGTH_SHORT).show())
-                                    .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
-                                            "Error adding reservation", Toast.LENGTH_SHORT).show());
-                                });
+                    String tripID = userDoc.getString("tripID");
+                    db.collection("Dining").add(
+                            new Dining(location, dateTime, website, tripID))
+                            .addOnSuccessListener(aVoid -> Toast.makeText(
+                                    DiningActivity.this,
+                                    "Reservation added successfully!",
+                                    Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
+                                    "Error adding reservation", Toast.LENGTH_SHORT).show());
+                });
         Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
         startActivity(intent);
     }

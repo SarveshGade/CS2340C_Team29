@@ -13,7 +13,8 @@ import com.example.sprintproject.model.Destination;
 
 import java.util.List;
 
-public class DestinationWrapper extends RecyclerView.Adapter<DestinationWrapper.DestinationViewHolder> {
+public class DestinationWrapper extends
+        RecyclerView.Adapter<DestinationWrapper.DestinationViewHolder> {
     private final List<Destination> destinations;
 
     public DestinationWrapper(List<Destination> destinations) {
@@ -42,8 +43,8 @@ public class DestinationWrapper extends RecyclerView.Adapter<DestinationWrapper.
 
     // ViewHolder class with appropriate visibility and field initialization
     public static class DestinationViewHolder extends RecyclerView.ViewHolder {
-        public final TextView destinationTitle;
-        public final TextView daysPlanned;
+        private final TextView destinationTitle;
+        private final TextView daysPlanned;
 
         public DestinationViewHolder(@NonNull View itemView) {
             super(itemView);
