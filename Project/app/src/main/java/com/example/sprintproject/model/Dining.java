@@ -5,15 +5,15 @@ public class Dining {
     private String location;
     private Date dateTime;
     private String website;
-    private String userId;
+    private String tripID;
 
     public Dining() { }
 
-    public Dining(String location, Date dateTime, String website, String userId) {
+    public Dining(String location, Date dateTime, String website, String tripID) {
         this.location = location;
         this.dateTime = dateTime;
         this.website = website;
-        this.userId = userId;
+        this.tripID = tripID;
     }
 
     public String getLocation() {
@@ -40,11 +40,11 @@ public class Dining {
         this.website = website;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getTripID() {
+        return tripID;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setTripID(String tripID) {
+        this.tripID = tripID;
     }
 }

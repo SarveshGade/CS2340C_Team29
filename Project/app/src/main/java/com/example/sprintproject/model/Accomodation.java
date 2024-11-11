@@ -15,20 +15,20 @@ public class Accomodation {
     private Date checkOutDate;
     private int numRooms;
     private String roomType;
-    private String userId;
+    private String tripID;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public Accomodation() {
 
     }
-    public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomType, String userId) {
+    public Accomodation(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomType, String tripID) {
         this.location = location;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.numRooms = numRooms;
         this.roomType = roomType;
-        this.userId = userId;
+        this.tripID = tripID;
     }
 
     public String getLocation() {
@@ -67,12 +67,12 @@ public class Accomodation {
         this.checkOutDate = checkOutDate;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getTripID() {
+        return tripID;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setTripID(String tripID) {
+        this.tripID = tripID;
     }
 
     public static boolean isValidDate(String dateStr) {

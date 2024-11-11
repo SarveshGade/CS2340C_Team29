@@ -183,11 +183,16 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
     private void saveReservation(String location, Date dateTime, String website) {
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Dining").add(new Dining(location, dateTime, website, userId))
-                .addOnSuccessListener(aVoid -> Toast.makeText(DiningActivity.this,
-                        "Reservation added successfully!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
-                                "Error adding reservation", Toast.LENGTH_SHORT).show());
+        db.collection("Users").document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                            String tripID = userDoc.getString("tripID");
+                            db.collection("Dining").add(new Dining(location, dateTime, website, tripID))
+                                    .addOnSuccessListener(aVoid -> Toast.makeText(DiningActivity.this,
+                                            "Reservation added successfully!", Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
+                                            "Error adding reservation", Toast.LENGTH_SHORT).show());
+                                });
         Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
         startActivity(intent);
     }
@@ -195,25 +200,37 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
     private void loadReservations() {
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Dining")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    reservations.clear();  // Clear existing items
 
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Dining dining = doc.toObject(Dining.class);
-                        reservations.add(dining);
-                    }
+        db.collection("Users").document(userId)
+            .get()
+            .addOnSuccessListener(userDoc -> {
+                String tripID = userDoc.getString("tripID");
 
-                    Collections.sort(reservations,
-                            (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
+                // Step 2: Use the tripID to query the Dining collection
+                db.collection("Dining")
+                        .whereEqualTo("tripID", tripID)
+                        .get()
+                        .addOnSuccessListener(querySnapshot -> {
+                            reservations.clear();  // Clear existing items
 
-                    // Notify observers that data has been updated
-                    notifyObservers(reservations);
-                })
-                .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
-                        "Error loading reservations", Toast.LENGTH_SHORT).show());
+                            for (QueryDocumentSnapshot doc : querySnapshot) {
+                                Dining dining = doc.toObject(Dining.class);
+                                reservations.add(dining);
+                            }
+
+                            Collections.sort(reservations,
+                                    (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
+
+                            // Notify observers that data has been updated
+                            notifyObservers(reservations);
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(DiningActivity.this,
+                                        "Error loading reservations", Toast.LENGTH_SHORT).show());
+            })
+            .addOnFailureListener(e ->
+                    Toast.makeText(DiningActivity.this,
+                            "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
     }
 
 

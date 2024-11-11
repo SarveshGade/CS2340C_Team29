@@ -205,32 +205,47 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     private void saveAccommodation(String location, Date checkIn, Date checkOut, int numRooms, String roomType) {
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("accommodation").add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, userId))
-                .addOnSuccessListener(aVoid -> Toast.makeText(AccommodationsActivity.this,
-                        "Accommodation added successfully!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
-                        "Error adding accommodation", Toast.LENGTH_SHORT).show());
+        db.collection("Users").document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    String tripID = userDoc.getString("tripID");
+                    db.collection("accommodation").add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID))
+                            .addOnSuccessListener(aVoid -> Toast.makeText(AccommodationsActivity.this,
+                                    "Accommodation added successfully!", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
+                                    "Error adding accommodation", Toast.LENGTH_SHORT).show());
+                });
         Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
         startActivity(intent);
     }
 
     private void loadAccommodations() {
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("accommodation")
-                .whereEqualTo("userId", userId)
+        db.collection("Users").document(userId)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    accommodations.clear();
+                .addOnSuccessListener(userDoc -> {
+                    String tripID = userDoc.getString("tripID");
 
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Accomodation accommodation = doc.toObject(Accomodation.class);
-                        accommodations.add(accommodation);
-                    }
+                    db.collection("accommodation")
+                            .whereEqualTo("tripID", tripID)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                accommodations.clear();
 
-                    sortAccommodations();
+                                for (QueryDocumentSnapshot doc : querySnapshot) {
+                                    Accomodation accommodation = doc.toObject(Accomodation.class);
+                                    accommodations.add(accommodation);
+                                }
+
+                                sortAccommodations();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
+                                    "Error loading accommodations", Toast.LENGTH_SHORT).show());
                 })
-                .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
-                        "Error loading accommodations", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e ->
+                        Toast.makeText(AccommodationsActivity.this,
+                                "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
+
     }
 
     public void onAccomodationsLoaded(List<Accomodation> accommodations) {
