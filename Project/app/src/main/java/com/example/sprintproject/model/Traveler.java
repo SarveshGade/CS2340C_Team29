@@ -14,20 +14,22 @@ public class Traveler extends BaseUser implements ITraveler {
     private String endDate;
     private int totalAllocatedDays;
     private int totalUsedDays;
+    private String tripID;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "TravelerModel"; // Tag for logging
 
-    public Traveler(String email, String password, String startDate, String endDate) {
+    public Traveler(String email, String password, String startDate, String endDate, String tripID) {
         super(email, password);
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalAllocatedDays = calculateTotalAllocatedDays();
         this.totalUsedDays = 0;
+        this.tripID = tripID;
     }
 
     public Traveler(String email, String password) {
-        this(email, password, "N/A", "N/A");
+        this(email, password, "N/A", "N/A", "N/A");
     }
 
     public String getEmail() {
@@ -49,6 +51,9 @@ public class Traveler extends BaseUser implements ITraveler {
     }
 
     @Override
+    public String getTripID() { return tripID; };
+
+    @Override
     public int getTotalAllocatedDays() {
         return totalAllocatedDays;
     }
@@ -63,6 +68,10 @@ public class Traveler extends BaseUser implements ITraveler {
         this.totalAllocatedDays = totalAllocatedDays;
     }
 
+    public void setTripID(String tripID) {
+        this.tripID = tripID;
+    }
+
     public int getTotalUsedDays() {
         return totalUsedDays;
     }
@@ -73,7 +82,7 @@ public class Traveler extends BaseUser implements ITraveler {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", super.getEmail());
 
-        db.collection("users")
+        db.collection("Users")
                 .document(travelerInfo) // Use email as the document ID
                 .set(userMap)
                 .addOnSuccessListener(aVoid -> {
@@ -94,7 +103,6 @@ public class Traveler extends BaseUser implements ITraveler {
             if (end.before(start)) {
                 return 0;
             }
-
             long diffInMillis = end.getTime() - start.getTime();
             return (int) (diffInMillis / (1000 * 60 * 60 * 24));
         } catch (ParseException e) {

@@ -34,7 +34,7 @@ public class DiningTest {
         String result = diningActivity.validateReservationInput("Test Location", new Date(), "");
         assertEquals("Website cannot be empty", result);
     }
-    // validdate empty date/time refer to the validateReservationInput method in
+    // validate empty date/time refer to the validateReservationInput method in
     // the DiningActivity or check they are are all valid
     @Test
     public void testValidateEmptyDateTime() {
