@@ -279,4 +279,21 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             observer.onAccomodationsLoaded(accommodations);
         }
     }
+
+    // used to test code
+    public String validateReservationInput(String location, Date checkInDate, Date checkOutDate, int numRooms) {
+        if (location == null || location.isEmpty()) {
+            return "Location cannot be empty";
+        }
+        if (checkInDate == null) {
+            return "Check in date must be selected";
+        }
+        if (checkOutDate == null ) {
+            return "Check out date must be selected";
+        }
+        if (numRooms < 0) {
+            return "Number of rooms cannot be less than 0!";
+        }
+        return null;
+    }
 }
