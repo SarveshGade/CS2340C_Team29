@@ -73,6 +73,25 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
         ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
         ImageButton forumButton = findViewById(R.id.forumButton);
         Button reservationButton = findViewById(R.id.addReservation);
+        Button sortByDateButton = findViewById(R.id.sort_by_date);
+        Button sortByTimeButton = findViewById(R.id.sort_by_time);
+
+        sortByDateButton.setOnClickListener(v -> {
+            Collections.sort(reservations, (a, b) -> a.getDateTime().compareTo(b.getDateTime()));
+            notifyObservers(reservations);
+        });
+
+        sortByTimeButton.setOnClickListener(v -> {
+            Collections.sort(reservations, (a, b) -> {
+                Calendar aCal = Calendar.getInstance();
+                aCal.setTime(a.getDateTime());
+                Calendar bCal = Calendar.getInstance();
+                bCal.setTime(b.getDateTime());
+                return Integer.compare(aCal.get(Calendar.HOUR_OF_DAY), bCal.get(Calendar.HOUR_OF_DAY));
+            });
+            notifyObservers(reservations);
+        });
+
         reservationButton.setOnClickListener(v -> showReservationDialog());
         loadReservations();
 

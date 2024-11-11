@@ -21,11 +21,35 @@
         android:layout_marginTop="100sp"
         android:padding="16dp" />
 
+    <LinearLayout
+        android:id="@+id/sortButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/diningHeader"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/sort_by_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sort_by_time" />
+
+        <Button
+            android:id="@+id/sort_by_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/sort_by_date" />
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/diningHeader"
+        app:layout_constraintTop_toBottomOf="@id/sortButtons"
         app:layout_constraintBottom_toTopOf="@id/addReservation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
