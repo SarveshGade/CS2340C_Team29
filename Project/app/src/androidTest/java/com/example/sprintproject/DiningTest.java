@@ -36,4 +36,15 @@ public class DiningTest {
     }
     // validdate empty date/time refer to the validateReservationInput method in
     // the DiningActivity or check they are are all valid
+    @Test
+    public void testValidateEmptyDateTime() {
+        String result = diningActivity.validateReservationInput("Test Location", null, "www.example.com");
+        assertEquals("Date and time must be selected", result);
+    }
+
+    @Test
+    public void testValidateValidInput() {
+        String result = diningActivity.validateReservationInput("Test Location", new Date(), "www.example.com");
+        assertEquals(null, result);
+    }
 }
