@@ -301,7 +301,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
 
     // used to test code
     public String validateReservationInput(String location, Date checkInDate,
-                                           Date checkOutDate, int numRooms) {
+                                           Date checkOutDate, int numRooms, String roomtype) {
         if (location == null || location.isEmpty()) {
             return "Location cannot be empty";
         }
