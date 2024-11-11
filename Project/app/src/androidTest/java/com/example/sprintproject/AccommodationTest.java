@@ -25,8 +25,6 @@ public class AccommodationTest {
         scenario.onActivity(activity -> accommodationsActivity = activity);
     }
 
-    // validdate empty date/time refer to the validateReservationInput method in
-    // the DiningActivity or check they are are all valid
     @Test
     public void testValidateEmptyCheckInDate() {
         String result = accommodationsActivity.validateReservationInput("Test Location", null, new Date(), 3);
@@ -36,6 +34,18 @@ public class AccommodationTest {
     @Test
     public void testValidateValidInput() {
         String result = accommodationsActivity.validateReservationInput("Test Location", new Date(), new Date(), -4);
+        assertEquals("Number of rooms cannot be less than 0!", result);
+    }
+
+    @Test
+    public void testValidateEmptyCheckOutDate() {
+        String result = accommodationsActivity.validateReservationInput("Test Location", new Date(), null, 3);
+        assertEquals("Check in date must be selected", result);
+    }
+
+    @Test
+    public void testValidateLocation() {
+        String result = accommodationsActivity.validateReservationInput(null, new Date(), new Date(), 4);
         assertEquals("Number of rooms cannot be less than 0!", result);
     }
 }
