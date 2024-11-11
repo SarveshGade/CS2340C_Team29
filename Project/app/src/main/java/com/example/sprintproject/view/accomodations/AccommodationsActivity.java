@@ -300,7 +300,7 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     }
 
     // used to test code
-    public String validateReservationInput(String location, Date checkInDate, Date checkOutDate, int numRooms) {
+    public String validateReservationInput(String location, Date checkInDate, Date checkOutDate, int numRooms, String roomtype) {
         if (location == null || location.isEmpty()) {
             return "Location cannot be empty";
         }
@@ -312,7 +312,12 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
         }
         if (numRooms < 0) {
             return "Number of rooms cannot be less than 0!";
+
+        }
+        if (roomtype == null || roomtype.isEmpty()) {
+            return "Room type cannot be empty";
         }
         return null;
     }
+
 }
