@@ -11,18 +11,18 @@
         android:id="@+id/forumHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/welcome_to_the_forum"
+        android:padding="16dp"
+        android:text="Travel Community Forum"
         android:textColor="@android:color/black"
-        android:textSize="50sp"
+        android:textSize="40sp"
+
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop = "100sp"
-        android:padding = "16dp"
-
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/navbar"
@@ -32,6 +32,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+    <Button
+        android:id="@+id/addTripButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Trip Post"
+        app:layout_constraintBottom_toTopOf="@id/navbar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
