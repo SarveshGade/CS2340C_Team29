@@ -308,8 +308,12 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         }
     }
     public static int calculateDuration(Date startDate, Date endDate) {
+
         if (startDate == null || endDate == null) {
             return -1;
+        }
+        if (endDate.before(startDate)) {
+            return -1; // Return -1 for invalid date ranges
         }
         long diffInMillis = endDate.getTime() - startDate.getTime();
         return (int) (diffInMillis / (1000 * 60 * 60 * 24)); // Convert to days

@@ -41,4 +41,23 @@ public class ForumTest {
         assertEquals(-1, duration);
     }
 
+    @Test
+    public void testCalculateDurationEndDateBeforeStartDate() {
+        Date startDate = new Date(2024 - 1900, 11, 28); // Dec 28, 2024
+        Date endDate = new Date(2024 - 1900, 11, 23); // Dec 23, 2024
+        int duration = ForumActivity.calculateDuration(startDate, endDate);
+        assertEquals(-1, duration);
+    }
+
+    @Test
+    public void testCalculateDurationBothDatesNull() {
+        int duration = ForumActivity.calculateDuration(null, null);
+        assertEquals(-1, duration);
+    }
+
+
+
+
+
+
 }
