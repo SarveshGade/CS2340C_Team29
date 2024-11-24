@@ -198,7 +198,7 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         builder.create().show();
     }
     private void selectCheckInDate() {
-        final Calendar calendar = Calendar.getInstance(); // Get today's date
+        final Calendar calendar = Calendar.getInstance(); 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckIn = calendar.getTime();
@@ -211,7 +211,7 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
     }
 
     private void selectCheckOutDate() {
-        final Calendar calendar = Calendar.getInstance(); // Get today's date
+        final Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckOut = calendar.getTime();
