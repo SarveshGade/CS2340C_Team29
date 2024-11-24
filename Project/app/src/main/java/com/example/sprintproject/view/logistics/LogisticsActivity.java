@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -92,7 +93,48 @@ public class LogisticsActivity extends AppCompatActivity {
             builder.setView(layout);
             builder.setPositiveButton("Invite", (dialog, which) -> {
                 String userEmail = userEmailInput.getText().toString().trim();
-                //save userEmail as invited user in database
+
+                if (userEmail.isEmpty()) {
+                    Toast.makeText(LogisticsActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Observe the tripID LiveData
+                logisticsViewModel.getTripID().observe(LogisticsActivity.this, tripID -> {
+                    if (tripID == null || tripID.isEmpty()) {
+                        Toast.makeText(LogisticsActivity.this, "Trip ID is not available", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Find the user by email
+                        db.collection("Users")
+                                .whereEqualTo("email", userEmail)
+                                .get()
+                                .addOnSuccessListener(querySnapshot -> {
+                                    if (querySnapshot.isEmpty()) {
+                                        Toast.makeText(LogisticsActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    // Get the first (and only) document
+                                    DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
+                                    String userID = doc.getId(); // Get the user ID (document ID)
+
+                                    // Update the user's trip ID
+                                    db.collection("Users").document(userID)
+                                            .update("tripID", tripID)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(LogisticsActivity.this, "User successfully invited", Toast.LENGTH_SHORT).show();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(LogisticsActivity.this, "Failed to invite user", Toast.LENGTH_SHORT).show();
+                                                Log.e("LogisticsActivity", "Error updating tripID", e);
+                                            });
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(LogisticsActivity.this, "Error finding user", Toast.LENGTH_SHORT).show();
+                                    Log.e("LogisticsActivity", "Error querying user by email", e);
+                                });
+                    }
+                });
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.create().show();
@@ -216,33 +258,29 @@ public class LogisticsActivity extends AppCompatActivity {
     }
 
     private void saveNote(String noteText) {
-        String userId = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getUid() : "unknown_user";
         String userEmail = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getEmail() : "unknown_email";
 
-        db.collection("Users").document(userId)
-                .get()
-                .addOnSuccessListener(userDoc -> {
-                    String tripId = userDoc.getString("tripID");
-                    Note note = new Note(noteText,new Date(), tripId, userEmail);
-
-                    db.collection("Notes").add(note)
-                            .addOnSuccessListener(documentReference -> {
-                                Toast.makeText(LogisticsActivity.this,
-                                        "Note added successfully!", Toast.LENGTH_SHORT).show();
-                                loadNotes(); // Reload notes after adding
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(LogisticsActivity.this,
-                                    "Error adding note", Toast.LENGTH_SHORT).show());
-                });
+        logisticsViewModel.getTripID().observe(this, tripID -> {
+            Note note = new Note(noteText,new Date(), tripID, userEmail);
+            db.collection("Notes").add(note)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(LogisticsActivity.this,
+                                "Note added successfully!", Toast.LENGTH_SHORT).show();
+                        loadNotes(); // Reload notes after adding
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(LogisticsActivity.this,
+                                "Error adding note", Toast.LENGTH_SHORT).show();
+                    });
+        });
     }
 
     private void loadNotes() {
         logisticsViewModel.getTripID().observe(this, tripID -> {
             // Check if tripID is valid before querying
             if (tripID == null || tripID.isEmpty()) {
-                Log.e("LogisticsActivity", "empty trip id");
+                Log.e("LogisticsActivity", "Empty trip ID");
                 Toast.makeText(LogisticsActivity.this, "Invalid trip ID", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -271,18 +309,14 @@ public class LogisticsActivity extends AppCompatActivity {
 
     private void onNotesLoaded(List<Note> notes) {
         noteList.removeAllViews();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        Date currentDate = new Date();
         for (Note note : notes) {
             TextView noteView = new TextView(this);
             noteView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             noteView.setPadding(0, 16, 0, 16);
             Date datePosted = note.getTimestamp();
-
-            String checkInStr = datePosted != null ? dateFormat.format(datePosted) : "Invalid Date";
             noteView.setText(String.format(
-                    "Timestamp: %s\nUsername: %s\n%s",
+                    "Timestamp: %s\nUser email: %s\n%s",
                     datePosted,
                     note.getUserEmail(),
                     note.getText()
