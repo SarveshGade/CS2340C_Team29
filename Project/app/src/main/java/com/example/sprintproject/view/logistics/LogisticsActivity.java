@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.model.Accomodation;
+import com.example.sprintproject.model.AccomodationsObserver;
 import com.example.sprintproject.model.Note;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
@@ -37,9 +39,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class LogisticsActivity extends AppCompatActivity {
@@ -47,6 +51,7 @@ public class LogisticsActivity extends AppCompatActivity {
     private PieChart pieChart;
     private LogisticsViewModel logisticsViewModel;
     private LinearLayout noteList;
+    private List<Note> notes = new ArrayList<>();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -243,17 +248,15 @@ public class LogisticsActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(userDoc -> {
                     String tripId = userDoc.getString("tripID");
-
-                    // Query notes for this trip
                     db.collection("Notes")
                             .whereEqualTo("tripId", tripId)
                             .get()
                             .addOnSuccessListener(querySnapshot -> {
-                                noteList.removeAllViews(); // Clear existing notes
+                                notes.clear();
 
                                 for (QueryDocumentSnapshot doc : querySnapshot) {
                                     Note note = doc.toObject(Note.class);
-                                    displayNote(note);
+                                    notes.add(note);
                                 }
                             })
                             .addOnFailureListener(e -> Toast.makeText(LogisticsActivity.this,
@@ -263,17 +266,27 @@ public class LogisticsActivity extends AppCompatActivity {
                         "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
     }
 
-    private void displayNote(Note note) {
-        TextView noteView = new TextView(this);
-        noteView.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        noteView.setPadding(0, 16, 0, 16);
+    private void onNotesLoaded(List<Note> notes) {
+        noteList.removeAllViews();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        Date currentDate = new Date();
 
-        // Format the note display with user email and text
-        String displayText = String.format("From: %s\n%s",
-                note.getUserEmail(), note.getText());
-        noteView.setText(displayText);
+        for (Note note : notes) {
+            TextView noteView = new TextView(this);
+            noteView.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            noteView.setPadding(0, 16, 0, 16);
+            Date datePosted = note.getTimestamp();
 
-        noteList.addView(noteView);
+            String checkInStr = datePosted != null ? dateFormat.format(datePosted) : "Invalid Date";
+            noteView.setText(String.format(
+                    "Timestamp: %s\nUsername: %s\n%s",
+                    datePosted,
+                    note.getUserEmail(),
+                    note.getText()
+            ));
+            noteList.addView(noteView);
+        }
+
     }
 }
