@@ -4,13 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.sprintproject.model.SortByCheckIn;
+import com.example.sprintproject.model.SortByCheckOut;
+import com.example.sprintproject.model.SortStrategy;
+import com.example.sprintproject.model.SortingDecorator;
 import com.example.sprintproject.model.TravelCommunity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +29,8 @@ public class ForumViewModel extends ViewModel {
     public LiveData<List<TravelCommunity>> getForums() {
         return forums;
     }
+
+    private SortStrategy sortStrategy;
 
     public void loadForums() {
         db.collection("TravelCommunity")
@@ -78,22 +84,23 @@ public class ForumViewModel extends ViewModel {
         });
     }
 
+    public void setSortStrategy(SortStrategy strategy) {
+        this.sortStrategy = strategy;
+    }
+
     public void sortPosts() {
-        if (forums.getValue() != null) {
-            List<TravelCommunity> sortedList = new ArrayList<>(forums.getValue());
-            Collections.sort(sortedList, (a, b) -> {
-                if (sortByCheckIn) {
-                    return a.getStartDate().compareTo(b.getStartDate());
-                } else {
-                    return a.getEndDate().compareTo(b.getEndDate());
-                }
-            });
+        if (forums.getValue() != null && sortStrategy != null) {
+            List<TravelCommunity> sortedList = sortStrategy.sort(forums.getValue());
             forums.setValue(sortedList);
         }
     }
 
     public void setSortByCheckIn(boolean sortByCheckIn) {
-        this.sortByCheckIn = sortByCheckIn;
+        if (sortByCheckIn) {
+            setSortStrategy(new SortingDecorator(new SortByCheckIn()));
+        } else {
+            setSortStrategy(new SortingDecorator(new SortByCheckOut()));
+        }
         sortPosts();
     }
 }
