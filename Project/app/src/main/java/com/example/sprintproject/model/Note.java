@@ -8,15 +8,14 @@ public class Note {
     private String tripID;
     private String userEmail; // Added field for user's email
 
-    // Required empty constructor for Firestore
-    public Note() {}
-
     public Note(String text, Date timestamp, String tripID, String userEmail) {
         this.text = text;
         this.timestamp = timestamp;
         this.tripID = tripID;
         this.userEmail = userEmail;
     }
+
+    public Note() { }
 
     public String getText() {
         return text;
