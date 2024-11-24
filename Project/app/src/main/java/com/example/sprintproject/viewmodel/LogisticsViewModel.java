@@ -44,16 +44,8 @@ public class LogisticsViewModel extends ViewModel {
         return totalAllocatedDays;
     }
 
-    public LiveData<String> getTripID() {
+    public MutableLiveData<String> getTripID() {
         return tripID;
-    }
-
-    public LiveData<List<Note>> getNotes() {
-        return notesLiveData;
-    }
-
-    public LiveData<String> getInviteStatus() {
-        return inviteStatus;
     }
 
     private void loadUserData() {
@@ -76,8 +68,9 @@ public class LogisticsViewModel extends ViewModel {
                     }
 
                     if (documentSnapshot.contains("tripID")) {
-                        totalAllocatedDays.setValue(documentSnapshot
-                                .getLong("tripID").intValue());
+                        tripID.setValue(documentSnapshot
+                                .getString("tripID"));
+                        Log.w(TAG, "Trip id is: " + tripID.getValue());
                     } else {
                         Log.w(TAG, "No tripID field found.");
                     }
@@ -96,7 +89,6 @@ public class LogisticsViewModel extends ViewModel {
         }
         return null;
     }
-
 
     public void addNote(Note note) {
         db.collection("Notes").add(note)
