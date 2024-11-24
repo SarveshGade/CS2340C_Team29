@@ -250,35 +250,24 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
         startActivity(intent);
     }
+
     private void loadforums() {
-        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid()
-                : "unknown_user";
-        db.collection("Users").document(userId)
+        db.collection("TravelCommunity")
                 .get()
-                .addOnSuccessListener(userDoc -> {
-                    String tripID = userDoc.getString("tripID");
+                .addOnSuccessListener(querySnapshot -> {
+                    forums.clear();
 
-                    db.collection("TravelCommunity")
-                            .whereEqualTo("tripID", tripID)
-                            .get()
-                            .addOnSuccessListener(querySnapshot -> {
-                                forums.clear();
-
-                                for (QueryDocumentSnapshot doc : querySnapshot) {
-                                    TravelCommunity post = doc.toObject(TravelCommunity.class);
-                                    forums.add(post);
-                                }
-                                sortPosts();
-
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(ForumActivity.this,
-                                    "Error loading", Toast.LENGTH_SHORT).show());
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        TravelCommunity post = doc.toObject(TravelCommunity.class);
+                        forums.add(post);
+                    }
+                    sortPosts();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(ForumActivity.this,
-                                "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
-
+                        Toast.makeText(ForumActivity.this, "Error loading posts", Toast.LENGTH_SHORT).show()
+                );
     }
+
     public void onForumsLoaded(List<TravelCommunity> posts) {
         forumsList.removeAllViews();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
