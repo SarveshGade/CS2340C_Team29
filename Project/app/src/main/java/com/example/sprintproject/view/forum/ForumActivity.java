@@ -42,10 +42,6 @@ public class ForumActivity extends AppCompatActivity {
             return insets;
         });
 
-
-
-
-
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
         ImageButton diningButton = findViewById(R.id.diningButton);
