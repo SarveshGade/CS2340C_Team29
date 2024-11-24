@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,8 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.Accomodation;
-import com.example.sprintproject.model.AccomodationsObserver;
+
 import com.example.sprintproject.model.ForumObserver;
 import com.example.sprintproject.model.TravelCommunity;
 import com.example.sprintproject.view.location.LocationActivity;
@@ -173,9 +171,11 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         etNotes.setLines(4);
         layout.addView(etNotes);
 
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Add Travel Post");
         builder.setView(scrollView);
+
 
         builder.setPositiveButton("Submit", (dialog, which) -> {
             String destination = etDestination.getText().toString().trim();
@@ -187,7 +187,8 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
                 Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                savePost(selectedCheckIn, selectedCheckOut, destination, accommodations, dining, notes);
+                savePost(selectedCheckIn, selectedCheckOut, destination,
+                        accommodations, dining, notes);
             }
 
             Toast.makeText(this, "Trip added successfully!", Toast.LENGTH_SHORT).show();
@@ -228,7 +229,8 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         notifyObservers(forums);
     }
 
-    private void savePost(Date start, Date end, String destination, String accommodations, String dining, String notes) {
+    private void savePost(Date start, Date end, String destination, String accommodations,
+                          String dining, String notes) {
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)
@@ -291,22 +293,27 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
 
             String checkInStr = checkIn != null ? dateFormat.format(checkIn) : "Invalid Date";
             String checkOutStr = checkOut != null ? dateFormat.format(checkOut) : "Invalid Date";
-
+            int duration = calculateDuration(checkIn, checkOut);
             forumView.setText(String.format(
                     "Username: %s\nDestination: %s\nAccomodations: %s\nDining: %s\n"
-                            + "Notes: %s\nStartDate: %s\nEndDate: %s",
+                            + "Notes: %s\nDuration: %d",
                     post.getUsername(),
                     post.getDestination(),
                     post.getAccommodation(),
                     post.getDining(),
                     post.getNotes(),
-                    checkInStr,
-                    checkOutStr
+                    duration
             ));
             forumsList.addView(forumView);
         }
     }
-
+    public static int calculateDuration(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            return -1;
+        }
+        long diffInMillis = endDate.getTime() - startDate.getTime();
+        return (int) (diffInMillis / (1000 * 60 * 60 * 24)); // Convert to days
+    }
     public void addObserver(ForumObserver observer) {
         observers.add(observer);
     }
