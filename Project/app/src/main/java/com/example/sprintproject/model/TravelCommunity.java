@@ -1,11 +1,8 @@
 package com.example.sprintproject.model;
-import android.util.Log;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 public class TravelCommunity {
     private String accommodation;
     private String dining;
@@ -17,20 +14,20 @@ public class TravelCommunity {
     private String username; //to connect
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    //private static final String TAG = "TravelCommunityModel"; // Tag for logging
 
-    public TravelCommunity() { }
-
-    public TravelCommunity(String accommodation, String destination, String dining, String notes, String tripID, Date startDate, Date endDate, String username) {
+    public TravelCommunity(String accommodation, String destination,
+                           String dining, String notes, Date startDate,
+                           Date endDate, String username) {
         this.accommodation = accommodation;
         this.dining = dining;
         this.notes = notes;
         this.destination = destination;
-        this.tripID = tripID;
         this.startDate = startDate;
         this.endDate = endDate;
         this.username = username;
     }
+
+    public TravelCommunity() { }
 
     public Date getStartDate() {
         return startDate;

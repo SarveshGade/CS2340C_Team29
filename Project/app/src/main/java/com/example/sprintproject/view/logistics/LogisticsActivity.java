@@ -22,29 +22,17 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import android.content.Intent;
-
-import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 
 public class LogisticsActivity extends AppCompatActivity {
 
@@ -52,147 +40,53 @@ public class LogisticsActivity extends AppCompatActivity {
     private LogisticsViewModel logisticsViewModel;
     private LinearLayout noteList;
     private List<Note> notes = new ArrayList<>();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_logistics);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        pieChart = findViewById(R.id.pieChart);
-
-        pieChart.setNoDataText(""); // Set no data text to empty to hide it
-        pieChart.invalidate();
-
         logisticsViewModel = new ViewModelProvider(this).get(LogisticsViewModel.class);
 
+        pieChart = findViewById(R.id.pieChart);
+        pieChart.setNoDataText("");
+        pieChart.invalidate();
+
         Button createGraphButton = findViewById(R.id.button_creategraph);
-        createGraphButton.setOnClickListener((l) -> drawChart());
+        createGraphButton.setOnClickListener(v -> drawChart());
 
         Button inviteButton = findViewById(R.id.inviteButton);
-        inviteButton.setOnClickListener(v -> {
-            android.app.AlertDialog.Builder builder =
-                    new android.app.AlertDialog.Builder(LogisticsActivity.this);
-            builder.setTitle("Invite User");
+        inviteButton.setOnClickListener(v -> showInviteDialog());
 
-            LinearLayout layout = new LinearLayout(LogisticsActivity.this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setPadding(50, 40, 50, 40);
-
-            final android.widget.EditText userEmailInput =
-                    new android.widget.EditText(LogisticsActivity.this);
-            userEmailInput.setHint("Enter Email of User to Invite");
-            layout.addView(userEmailInput);
-            builder.setView(layout);
-            builder.setPositiveButton("Invite", (dialog, which) -> {
-                String userEmail = userEmailInput.getText().toString().trim();
-
-                if (userEmail.isEmpty()) {
-                    Toast.makeText(LogisticsActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Observe the tripID LiveData
-                logisticsViewModel.getTripID().observe(LogisticsActivity.this, tripID -> {
-                    if (tripID == null || tripID.isEmpty()) {
-                        Toast.makeText(LogisticsActivity.this, "Trip ID is not available", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Find the user by email
-                        db.collection("Users")
-                                .whereEqualTo("email", userEmail)
-                                .get()
-                                .addOnSuccessListener(querySnapshot -> {
-                                    if (querySnapshot.isEmpty()) {
-                                        Toast.makeText(LogisticsActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-                                    // Get the first (and only) document
-                                    DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
-                                    String userID = doc.getId(); // Get the user ID (document ID)
-
-                                    // Update the user's trip ID
-                                    db.collection("Users").document(userID)
-                                            .update("tripID", tripID)
-                                            .addOnSuccessListener(aVoid -> {
-                                                Toast.makeText(LogisticsActivity.this, "User successfully invited", Toast.LENGTH_SHORT).show();
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                Toast.makeText(LogisticsActivity.this, "Failed to invite user", Toast.LENGTH_SHORT).show();
-                                                Log.e("LogisticsActivity", "Error updating tripID", e);
-                                            });
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(LogisticsActivity.this, "Error finding user", Toast.LENGTH_SHORT).show();
-                                    Log.e("LogisticsActivity", "Error querying user by email", e);
-                                });
-                    }
-                });
-            });
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-            builder.create().show();
-        });
         noteList = findViewById(R.id.notesList);
         Button addNoteButton = findViewById(R.id.addNote);
-        // Add click listener for the Add Note button
         addNoteButton.setOnClickListener(v -> showAddNoteDialog());
 
+        setupNavigationButtons();
+        logisticsViewModel.getNotes().observe(this, this::onNotesLoaded);
+        logisticsViewModel.getInviteStatus().observe(this, isSuccess -> {
+            if (isSuccess) {
+                Toast.makeText(this, "User successfully invited", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to invite user", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Load existing notes
-        loadNotes();
-
-        ImageButton logisticsButton = findViewById(R.id.logisticsButton);
-        ImageButton locationButton = findViewById(R.id.locationButton);
-        ImageButton diningButton = findViewById(R.id.diningButton);
-        ImageButton accommodationsButton = findViewById(R.id.accommodationsButton);
-        ImageButton forumButton = findViewById(R.id.forumButton);
-
-        logisticsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, LogisticsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        locationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, LocationActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        diningButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, DiningActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        accommodationsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, AccommodationsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        forumButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LogisticsActivity.this, ForumActivity.class);
-                startActivity(intent);
+        logisticsViewModel.getTripID().observe(this, tripID -> {
+            if (tripID != null && !tripID.isEmpty()) {
+                logisticsViewModel.loadNotes();
             }
         });
     }
+
     public void drawChart() {
         List<PieEntry> entries = new ArrayList<>();
 
@@ -200,16 +94,16 @@ public class LogisticsActivity extends AppCompatActivity {
         Integer totalUsedDays = logisticsViewModel.getTotalUsedDays().getValue();
 
         // Handle null values more safely
-        if (totalAllocatedDays != null && totalAllocatedDays > 0) {
-            entries.add(new PieEntry(totalAllocatedDays - totalUsedDays, "Remaining"));
-        } else {
-            entries.add(new PieEntry(0, "Remaining"));
-        }
-
         if (totalUsedDays != null && totalUsedDays > 0) {
             entries.add(new PieEntry(totalUsedDays, "Planned"));
         } else {
             entries.add(new PieEntry(0, "Planned"));
+        }
+
+        if (totalAllocatedDays != null && totalAllocatedDays > 0) {
+            entries.add(new PieEntry(totalAllocatedDays - totalUsedDays, "Remaining"));
+        } else {
+            entries.add(new PieEntry(0, "Remaining"));
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
@@ -236,6 +130,26 @@ public class LogisticsActivity extends AppCompatActivity {
         pieChart.invalidate(); // Refresh the chart
     }
 
+    private void showInviteDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Invite User");
+
+        EditText userEmailInput = new EditText(this);
+        userEmailInput.setHint("Enter email of the user to invite");
+
+        builder.setView(userEmailInput);
+        builder.setPositiveButton("Invite", (dialog, which) -> {
+            String email = userEmailInput.getText().toString().trim();
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            logisticsViewModel.inviteUser(email);
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
     private void showAddNoteDialog() {
         EditText noteInput = new EditText(this);
         noteInput.setHint("Enter your note");
@@ -246,65 +160,26 @@ public class LogisticsActivity extends AppCompatActivity {
                 .setPositiveButton("Submit", (dialog, which) -> {
                     String noteText = noteInput.getText().toString().trim();
                     if (!noteText.isEmpty()) {
-                        saveNote(noteText);
+                        logisticsViewModel.addNote(noteText);
                     } else {
-                        Toast.makeText(LogisticsActivity.this,
-                                "Note cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Note cannot be empty", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
         builder.show();
     }
 
-    private void saveNote(String noteText) {
-        String userEmail = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getEmail() : "unknown_email";
-
-        logisticsViewModel.getTripID().observe(this, tripID -> {
-            Note note = new Note(noteText,new Date(), tripID, userEmail);
-            db.collection("Notes").add(note)
-                    .addOnSuccessListener(documentReference -> {
-                        Toast.makeText(LogisticsActivity.this,
-                                "Note added successfully!", Toast.LENGTH_SHORT).show();
-                        loadNotes(); // Reload notes after adding
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(LogisticsActivity.this,
-                                "Error adding note", Toast.LENGTH_SHORT).show();
-                    });
-        });
-    }
-
-    private void loadNotes() {
-        logisticsViewModel.getTripID().observe(this, tripID -> {
-            // Check if tripID is valid before querying
-            if (tripID == null || tripID.isEmpty()) {
-                Log.e("LogisticsActivity", "Empty trip ID");
-                Toast.makeText(LogisticsActivity.this, "Invalid trip ID", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Proceed with loading notes
-            db.collection("Notes")
-                    .whereEqualTo("tripID", tripID)
-                    .get()
-                    .addOnSuccessListener(querySnapshot -> {
-                        notes.clear();
-
-                        for (QueryDocumentSnapshot doc : querySnapshot) {
-                            Note note = doc.toObject(Note.class);
-                            notes.add(note);
-                        }
-
-                        Log.d("LogisticsActivity", "Notes has size: " + notes.size());
-                        onNotesLoaded(notes);
-                    })
-                    .addOnFailureListener(e -> {
-                        // Show a toast and log the error
-                        Toast.makeText(LogisticsActivity.this, "Error loading notes", Toast.LENGTH_SHORT).show();
-                    });
-        });
+    private void setupNavigationButtons() {
+        findViewById(R.id.logisticsButton).setOnClickListener(v ->
+                startActivity(new Intent(this, LogisticsActivity.class)));
+        findViewById(R.id.locationButton).setOnClickListener(v ->
+                startActivity(new Intent(this, LocationActivity.class)));
+        findViewById(R.id.diningButton).setOnClickListener(v ->
+                startActivity(new Intent(this, DiningActivity.class)));
+        findViewById(R.id.accommodationsButton).setOnClickListener(v ->
+                startActivity(new Intent(this, AccommodationsActivity.class)));
+        findViewById(R.id.forumButton).setOnClickListener(v ->
+                startActivity(new Intent(this, ForumActivity.class)));
     }
 
     private void onNotesLoaded(List<Note> notes) {
@@ -314,15 +189,9 @@ public class LogisticsActivity extends AppCompatActivity {
             noteView.setLayoutParams(new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             noteView.setPadding(0, 16, 0, 16);
-            Date datePosted = note.getTimestamp();
-            noteView.setText(String.format(
-                    "Timestamp: %s\nUser email: %s\n%s",
-                    datePosted,
-                    note.getUserEmail(),
-                    note.getText()
-            ));
+            noteView.setText(String.format("Timestamp: %s\nUser email: %s\nNote: %s",
+                    note.getTimestamp(), note.getUserEmail(), note.getText()));
             noteList.addView(noteView);
         }
-
     }
 }

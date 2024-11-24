@@ -29,4 +29,6 @@
     <string name="sort_by_date">Sort by Date</string>
     <string name="sort_by_time">Sort by Time</string>
     <string name="add_note">Add Note</string>
+    <string name="select_check_in_date">Select Check-in Date</string>
+    <string name="select_check_out_date">Select Check-out Date</string>
 </resources>
