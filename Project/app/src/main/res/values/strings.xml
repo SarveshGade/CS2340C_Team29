@@ -28,4 +28,5 @@
     <string name="sort_by_check_out">Sort by Check-out</string>
     <string name="sort_by_date">Sort by Date</string>
     <string name="sort_by_time">Sort by Time</string>
+    <string name="add_note">Add Note</string>
 </resources>
