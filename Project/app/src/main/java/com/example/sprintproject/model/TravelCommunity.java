@@ -7,11 +7,13 @@ import java.util.Date;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 public class TravelCommunity {
-    private Date dateTime;
-    private String accomodation;
+    private String accommodation;
     private String dining;
-    private String transportation;
     private String notes;
+    private String destination;
+    private String tripID;
+    private Date startDate;
+    private Date endDate;
     private String username; //to connect
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -19,27 +21,46 @@ public class TravelCommunity {
 
     public TravelCommunity() { }
 
-    public TravelCommunity(Date dateTime, String accomodation, String dining, String transportation, String notes, String tripID) {
-        this.dateTime = dateTime;
-        this.accomodation = accomodation;
+    public TravelCommunity(String accommodation, String destination, String dining, String notes, String tripID, Date startDate, Date endDate, String username) {
+        this.accommodation = accommodation;
         this.dining = dining;
-        this.transportation = transportation;
         this.notes = notes;
+        this.destination = destination;
+        this.tripID = tripID;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.username = username;
     }
 
-    public Date getDateTime() {
-        return dateTime;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
-    }
-    public String getAccomodation() {
-        return accomodation;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public void setAccomodation(String accomodation) {
-        this.accomodation = accomodation;
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+
+    public void setAccommodation(String accommodation) {
+        this.accommodation = accommodation;
+    }
+    public String getAccommodation() {
+        return accommodation;
+    }
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public String getDining() {
@@ -48,14 +69,15 @@ public class TravelCommunity {
     public void setDining(String dining) {
         this.dining = dining;
     }
-
-    public String getTransportation() {
-        return transportation;
+    public String getTripID() {
+        return tripID;
     }
 
-    public void setTransportation(String transportation) {
-        this.transportation = transportation;
+    public void setTripID(String tripID) {
+        this.tripID = tripID;
     }
+
+
 
     public String getNotes() {
         return notes;
@@ -71,12 +93,6 @@ public class TravelCommunity {
     public void setUsername(String username) {
         this.username = username;
     }
-
-
-
-
-
-
 
 
 

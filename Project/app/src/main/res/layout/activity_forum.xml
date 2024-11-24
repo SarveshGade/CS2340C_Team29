@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".view.forum.ForumActivity">
 
+    <!-- Forum Header -->
     <TextView
         android:id="@+id/forumHeader"
         android:layout_width="match_parent"
@@ -17,13 +18,63 @@
         android:text="Travel Community Forum"
         android:textColor="@android:color/black"
         android:textSize="40sp"
-
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Sort Buttons -->
+    <LinearLayout
+        android:id="@+id/sortButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/forumHeader">
+
+        <Button
+            android:id="@+id/sortCheckInButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sort by Start Date" />
+
+        <Button
+            android:id="@+id/sortCheckOutButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sort by End Date" />
+    </LinearLayout>
+
+    <!-- Scrollable Forum Posts -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/sortButtons"
+        app:layout_constraintBottom_toTopOf="@id/addTripButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/forumsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" />
+    </ScrollView>
+
+    <!-- Add Trip Button -->
+    <Button
+        android:id="@+id/addTripButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Trip Post"
+        app:layout_constraintBottom_toTopOf="@id/navbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
+
+    <!-- Navigation Bar -->
     <include
         android:id="@+id/navbar"
         layout="@layout/navbar_frame_layout"
@@ -32,14 +83,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-    <Button
-        android:id="@+id/addTripButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Trip Post"
-        app:layout_constraintBottom_toTopOf="@id/navbar"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
