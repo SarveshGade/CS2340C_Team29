@@ -181,22 +181,34 @@ public class ForumActivity extends AppCompatActivity {
 
     private void selectCheckInDate() {
         final Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckIn = calendar.getTime();
-            checkInButton.setText(formatDate(selectedCheckIn));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+            checkInButton.setText("Check-in: "
+                    + dateFormat.format(selectedCheckIn));
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
     private void selectCheckOutDate() {
         final Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckOut = calendar.getTime();
-            checkOutButton.setText(formatDate(selectedCheckOut));
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "MMM dd, yyyy", Locale.getDefault());
+            checkOutButton.setText("Check-out: " + dateFormat.format(selectedCheckOut));
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
     private void displayForums(List<TravelCommunity> forums) {
@@ -224,7 +236,7 @@ public class ForumActivity extends AppCompatActivity {
         return date != null ? dateFormat.format(date) : "Select Date";
     }
 
-    private static int calculateDuration(Date startDate, Date endDate) {
+    public static int calculateDuration(Date startDate, Date endDate) {
         if (startDate == null || endDate == null) {
             return -1;
         }
