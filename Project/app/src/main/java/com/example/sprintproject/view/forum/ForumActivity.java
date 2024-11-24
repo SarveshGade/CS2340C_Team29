@@ -236,7 +236,7 @@ public class ForumActivity extends AppCompatActivity {
         return date != null ? dateFormat.format(date) : "Select Date";
     }
 
-    private static int calculateDuration(Date startDate, Date endDate) {
+    public static int calculateDuration(Date startDate, Date endDate) {
         if (startDate == null || endDate == null) {
             return -1;
         }
