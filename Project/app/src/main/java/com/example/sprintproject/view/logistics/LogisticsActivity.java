@@ -105,6 +105,7 @@ public class LogisticsActivity extends AppCompatActivity {
 
         // Load existing notes
         loadNotes();
+//        onNotesLoaded(notes);
 
 
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
@@ -270,7 +271,6 @@ public class LogisticsActivity extends AppCompatActivity {
         noteList.removeAllViews();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         Date currentDate = new Date();
-        // Should work now.....
         for (Note note : notes) {
             TextView noteView = new TextView(this);
             noteView.setLayoutParams(new LinearLayout.LayoutParams(

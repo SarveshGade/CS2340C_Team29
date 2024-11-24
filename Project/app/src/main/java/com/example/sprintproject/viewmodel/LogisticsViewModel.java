@@ -2,6 +2,7 @@ package com.example.sprintproject.viewmodel;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -19,6 +20,11 @@ public class LogisticsViewModel extends ViewModel {
     private final FirebaseFirestore db;
     private final MutableLiveData<Integer> totalUsedDays = new MutableLiveData<>(0);
     private final MutableLiveData<Integer> totalAllocatedDays = new MutableLiveData<>(0);
+
+    // LiveData to track the invite status
+    private final MutableLiveData<String> inviteStatus = new MutableLiveData<>();
+    // LiveData to track the tripID and notes for the current trip
+    private final MutableLiveData<String> tripID = new MutableLiveData<>();
 
     private final MutableLiveData<List<Note>> notesLiveData = new MutableLiveData<>(new ArrayList<>());
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -38,6 +44,18 @@ public class LogisticsViewModel extends ViewModel {
         return totalAllocatedDays;
     }
 
+    public LiveData<String> getTripID() {
+        return tripID;
+    }
+
+    public LiveData<List<Note>> getNotes() {
+        return notesLiveData;
+    }
+
+    public LiveData<String> getInviteStatus() {
+        return inviteStatus;
+    }
+
     private void loadUserData() {
         String userId = getUserId();
         if (userId != null) {
@@ -55,6 +73,13 @@ public class LogisticsViewModel extends ViewModel {
                                 .getLong("totalUsedDays").intValue());
                     } else {
                         Log.w(TAG, "No totalUsedDays field found.");
+                    }
+
+                    if (documentSnapshot.contains("tripID")) {
+                        totalAllocatedDays.setValue(documentSnapshot
+                                .getLong("tripID").intValue());
+                    } else {
+                        Log.w(TAG, "No tripID field found.");
                     }
                 } else {
                     Log.w(TAG, "Document does not exist.");
