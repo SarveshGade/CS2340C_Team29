@@ -198,26 +198,31 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
         builder.create().show();
     }
     private void selectCheckInDate() {
-        final Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        final Calendar calendar = Calendar.getInstance(); 
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckIn = calendar.getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
             checkInButton.setText("Check-in: " + dateFormat.format(selectedCheckIn));
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
     private void selectCheckOutDate() {
         final Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendar.set(year, month, dayOfMonth);
             selectedCheckOut = calendar.getTime();
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
             checkOutButton.setText("Check-out: " + dateFormat.format(selectedCheckOut));
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
+
     private void sortPosts() {
         Collections.sort(forums, (a, b) -> {
             if (sortByCheckIn) {
@@ -231,6 +236,10 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
 
     private void savePost(Date start, Date end, String destination, String accommodations,
                           String dining, String notes) {
+        if (start == null || end == null || start.before(new Date()) || end.before(new Date()) || end.before(start)) {
+            Toast.makeText(this, "Please select valid dates for your trip!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)
@@ -247,6 +256,8 @@ public class ForumActivity extends AppCompatActivity implements ForumObserver {
                             .addOnFailureListener(e -> Toast.makeText(ForumActivity.this,
                                     "Error adding post", Toast.LENGTH_SHORT).show());
                 });
+
+
         Intent intent = new Intent(ForumActivity.this, ForumActivity.class);
         startActivity(intent);
     }
