@@ -2,6 +2,7 @@ package com.example.sprintproject.viewmodel;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -20,6 +21,11 @@ public class LogisticsViewModel extends ViewModel {
     private final MutableLiveData<Integer> totalUsedDays = new MutableLiveData<>(0);
     private final MutableLiveData<Integer> totalAllocatedDays = new MutableLiveData<>(0);
 
+    // LiveData to track the invite status
+    private final MutableLiveData<String> inviteStatus = new MutableLiveData<>();
+    // LiveData to track the tripID and notes for the current trip
+    private final MutableLiveData<String> tripID = new MutableLiveData<>();
+
     private final MutableLiveData<List<Note>> notesLiveData = new MutableLiveData<>(new ArrayList<>());
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static final String TAG = "LogisticsViewModel";
@@ -36,6 +42,10 @@ public class LogisticsViewModel extends ViewModel {
 
     public MutableLiveData<Integer> getTotalAllocatedDays() {
         return totalAllocatedDays;
+    }
+
+    public MutableLiveData<String> getTripID() {
+        return tripID;
     }
 
     private void loadUserData() {
@@ -56,6 +66,14 @@ public class LogisticsViewModel extends ViewModel {
                     } else {
                         Log.w(TAG, "No totalUsedDays field found.");
                     }
+
+                    if (documentSnapshot.contains("tripID")) {
+                        tripID.setValue(documentSnapshot
+                                .getString("tripID"));
+                        Log.w(TAG, "Trip id is: " + tripID.getValue());
+                    } else {
+                        Log.w(TAG, "No tripID field found.");
+                    }
                 } else {
                     Log.w(TAG, "Document does not exist.");
                 }
@@ -71,7 +89,6 @@ public class LogisticsViewModel extends ViewModel {
         }
         return null;
     }
-
 
     public void addNote(Note note) {
         db.collection("Notes").add(note)

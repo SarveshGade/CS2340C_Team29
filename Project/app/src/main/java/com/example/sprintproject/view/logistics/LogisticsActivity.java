@@ -12,8 +12,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.Accomodation;
-import com.example.sprintproject.model.AccomodationsObserver;
 import com.example.sprintproject.model.Note;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
@@ -30,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import android.content.Intent;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -105,7 +104,6 @@ public class LogisticsActivity extends AppCompatActivity {
 
         // Load existing notes
         loadNotes();
-
 
         ImageButton logisticsButton = findViewById(R.id.logisticsButton);
         ImageButton locationButton = findViewById(R.id.locationButton);
@@ -241,36 +239,40 @@ public class LogisticsActivity extends AppCompatActivity {
     }
 
     private void loadNotes() {
-        String userId = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getUid() : "unknown_user";
+        logisticsViewModel.getTripID().observe(this, tripID -> {
+            // Check if tripID is valid before querying
+            if (tripID == null || tripID.isEmpty()) {
+                Log.e("LogisticsActivity", "empty trip id");
+                Toast.makeText(LogisticsActivity.this, "Invalid trip ID", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        db.collection("Users").document(userId)
-                .get()
-                .addOnSuccessListener(userDoc -> {
-                    String tripId = userDoc.getString("tripID");
-                    db.collection("Notes")
-                            .whereEqualTo("tripId", tripId)
-                            .get()
-                            .addOnSuccessListener(querySnapshot -> {
-                                notes.clear();
+            // Proceed with loading notes
+            db.collection("Notes")
+                    .whereEqualTo("tripID", tripID)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        notes.clear();
 
-                                for (QueryDocumentSnapshot doc : querySnapshot) {
-                                    Note note = doc.toObject(Note.class);
-                                    notes.add(note);
-                                }
-                            })
-                            .addOnFailureListener(e -> Toast.makeText(LogisticsActivity.this,
-                                    "Error loading notes", Toast.LENGTH_SHORT).show());
-                })
-                .addOnFailureListener(e -> Toast.makeText(LogisticsActivity.this,
-                        "Error retrieving user trip ID", Toast.LENGTH_SHORT).show());
+                        for (QueryDocumentSnapshot doc : querySnapshot) {
+                            Note note = doc.toObject(Note.class);
+                            notes.add(note);
+                        }
+
+                        Log.d("LogisticsActivity", "Notes has size: " + notes.size());
+                        onNotesLoaded(notes);
+                    })
+                    .addOnFailureListener(e -> {
+                        // Show a toast and log the error
+                        Toast.makeText(LogisticsActivity.this, "Error loading notes", Toast.LENGTH_SHORT).show();
+                    });
+        });
     }
 
     private void onNotesLoaded(List<Note> notes) {
         noteList.removeAllViews();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         Date currentDate = new Date();
-        // Should work now.....
         for (Note note : notes) {
             TextView noteView = new TextView(this);
             noteView.setLayoutParams(new LinearLayout.LayoutParams(
