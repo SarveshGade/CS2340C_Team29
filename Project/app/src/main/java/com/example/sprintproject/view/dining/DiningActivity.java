@@ -198,6 +198,7 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
                 .get()
                 .addOnSuccessListener(userDoc -> {
                     String tripID = userDoc.getString("tripID");
+                    reservations.add(new Dining(location, dateTime, website, tripID));
                     db.collection("Dining").add(
                             new Dining(location, dateTime, website, tripID))
                             .addOnSuccessListener(aVoid -> Toast.makeText(
@@ -207,6 +208,7 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
                             .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
                                     "Error adding reservation", Toast.LENGTH_SHORT).show());
                 });
+
         Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
         startActivity(intent);
     }

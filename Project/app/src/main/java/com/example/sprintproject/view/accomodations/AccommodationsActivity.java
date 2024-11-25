@@ -216,13 +216,14 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             }
         }
 
-
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)
                 .get()
                 .addOnSuccessListener(userDoc -> {
+
                     String tripID = userDoc.getString("tripID");
+                    accommodations.add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID));
                     db.collection("accommodation").add(new Accomodation(location,
                                     checkIn, checkOut, numRooms, roomType, tripID))
                             .addOnSuccessListener(aVoid -> Toast.makeText(
