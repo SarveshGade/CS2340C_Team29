@@ -43,7 +43,6 @@ public class ForumActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forum);
-
         forumsList = findViewById(R.id.forumsList);
         Button sortCheckInButton = findViewById(R.id.sortCheckInButton);
         Button sortCheckOutButton = findViewById(R.id.sortCheckOutButton);
@@ -51,7 +50,6 @@ public class ForumActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(ForumViewModel.class);
 
-        // Observe forums LiveData
         viewModel.getForums().observe(this, forums -> {
             forumsList.removeAllViews();
             if (forums != null) {

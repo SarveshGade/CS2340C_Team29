@@ -6,6 +6,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.sprintproject.view.forum.ForumActivity;
+import com.example.sprintproject.viewmodel.ForumViewModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,12 +18,16 @@ import java.util.Date;
 public class ForumTest {
 
     private ForumActivity forumActivity;
+    ForumViewModel forumViewModel;
 
     @Before
     public void setUp() {
         ActivityScenario<ForumActivity> scenario = ActivityScenario.launch(ForumActivity.class);
         scenario.onActivity(activity -> forumActivity = activity);
+        forumViewModel = new ForumViewModel();
+
     }
+
 
     @Test
     public void testCalculateDurationValidDates() {
@@ -55,9 +60,48 @@ public class ForumTest {
         assertEquals(-1, duration);
     }
 
+    @Test
+    public void testValidateNullAccommodation() {
+        String result = forumViewModel.validateTripInput(
+                new Date(),   new Date(),             "Destination",
+                null, "dining"
+        );
+        assertEquals("Accommodations cannot be empty!", result);
+    }
 
+    @Test
+    public void testValidateNullDestination() {
+        String result = forumViewModel.validateTripInput(
+                new Date(),   new Date(),             null,
+                "accommodation", "dining"
+        );
+        assertEquals("Destination cannot be empty!", result);
+    }
 
-
+    @Test
+    public void testValidateNullDining() {
+        String result = forumViewModel.validateTripInput(
+                new Date(),   new Date(),             "Destination",
+                "accommodation", null
+        );
+        assertEquals("Dining Reservations cannot be empty!", result);
+    }
+    @Test
+    public void testValidateNullCheckOut() {
+        String result = forumViewModel.validateTripInput(
+                new Date(),  null,             "Destination",
+                "accommodation", "dining"
+        );
+        assertEquals("Check-out date must be selected!", result);
+    }
+    @Test
+    public void testValidateNullCheckIn() {
+        String result = forumViewModel.validateTripInput(
+                null,   new Date(),             "Destination",
+                "accommodation", "dining"
+        );
+        assertEquals( "Check-in date must be selected!", result);
+    }
 
 
 }
