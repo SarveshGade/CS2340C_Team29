@@ -181,6 +181,17 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
     }
 
     private void saveReservation(String location, Date dateTime, String website) {
+        for (Dining reservation : reservations) {
+            if (reservation.getLocation().equalsIgnoreCase(location)
+                    && reservation.getDateTime().equals(dateTime)
+                    && reservation.getWebsite().equalsIgnoreCase(website)) {
+                Toast.makeText(DiningActivity.this,
+                        "Duplicate reservation! Please modify the details.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)

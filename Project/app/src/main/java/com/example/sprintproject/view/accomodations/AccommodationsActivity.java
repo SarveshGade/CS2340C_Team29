@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accomodation;
 import com.example.sprintproject.model.AccomodationsObserver;
+import com.example.sprintproject.model.Dining;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
@@ -201,6 +202,21 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
 
     private void saveAccommodation(String location, Date checkIn, Date checkOut,
                                         int numRooms, String roomType) {
+
+        for (Accomodation accomodation : accommodations) {
+            if (accomodation.getLocation().equalsIgnoreCase(location)
+                    && accomodation.getCheckInDate().equals(checkIn)
+                    && accomodation.getCheckOutDate().equals(checkOut)
+                    && accomodation.getNumRooms() == numRooms
+                    && accomodation.getRoomType().equalsIgnoreCase(roomType)) {
+                Toast.makeText(AccommodationsActivity.this,
+                        "Duplicate reservation! Please modify the details.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+
         String userId = mAuth.getCurrentUser() != null
                 ? mAuth.getCurrentUser().getUid() : "unknown_user";
         db.collection("Users").document(userId)
@@ -221,6 +237,8 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     }
 
     private void loadAccommodations() {
+
+
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid()
                 : "unknown_user";
         db.collection("Users").document(userId)
