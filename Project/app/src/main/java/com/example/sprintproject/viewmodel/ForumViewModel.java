@@ -10,13 +10,17 @@ import com.example.sprintproject.model.SortStrategy;
 import com.example.sprintproject.model.SortingDecorator;
 import com.example.sprintproject.model.TravelCommunity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ForumViewModel extends ViewModel {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -33,17 +37,43 @@ public class ForumViewModel extends ViewModel {
     private SortStrategy sortStrategy;
 
     public void loadForums() {
+
         db.collection("TravelCommunity")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
+
+
                     List<TravelCommunity> forumList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         forumList.add(doc.toObject(TravelCommunity.class));
+                    }
+                    if (forumList.isEmpty()) {
+                        forumList.add(createDefaultPost());
                     }
                     forums.setValue(forumList);
                     sortPosts();
                 })
                 .addOnFailureListener(e -> forums.setValue(null));
+    }
+    private TravelCommunity createDefaultPost() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        Date start = null;
+        Date end = null;
+        try {
+            start = dateFormat.parse("00-00-2024");
+            end = dateFormat.parse("01-01-2024");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new TravelCommunity(
+                "accommodation suggestions will be added here.",
+                "destination suggestions will be added here.",
+                "Dining suggestions will be added here.",
+                "Please add your trip details.",
+                start,
+                end,
+                "username"
+        );
     }
 
     public String validateTripInput(Date checkIn, Date checkOut, String destination,
