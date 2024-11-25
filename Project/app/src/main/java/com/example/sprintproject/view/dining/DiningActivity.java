@@ -228,9 +228,6 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
                                 });
                     }
                 });
-
-        Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
-        startActivity(intent);
     }
 
     private void loadReservations() {

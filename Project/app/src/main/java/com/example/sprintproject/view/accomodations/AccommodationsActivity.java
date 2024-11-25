@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -203,26 +204,35 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
     private Date normalizeDate(Date inputDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(inputDate);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);  // Set milliseconds to zero
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
 
     private void saveAccommodation(String location, Date checkIn, Date checkOut,
                                         int numRooms, String roomType) {
-            db.collection("Dining")
+            db.collection("accommodation")
                     .whereEqualTo("location", location)
                     .whereEqualTo("numRooms", numRooms)
                     .whereEqualTo("roomType" ,roomType)
                     .get()
                     .addOnSuccessListener(querySnapshot -> {
                         boolean isDuplicate = false;
+
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             Accomodation accomodation = document.toObject(Accomodation.class);
                             Date storedDate = normalizeDate(accomodation.getCheckInDate());
                             Date storedCheckOut = normalizeDate(accomodation.getCheckOutDate());
 
-                            if (storedDate.equals(normalizeDate(checkIn)) ||
+                            Log.d("DEBUG", "Checking reservation: " + accomodation);
+                            Log.d("DEBUG", "Normalized stored check in date: " + storedDate);
+                            Log.d("DEBUG", "Normalized input check in date: " + normalizeDate(checkIn));
+                            Log.d("DEBUG", "Normalized stored check out date: " + storedCheckOut);
+                            Log.d("DEBUG", "Normalized input check out date: " + normalizeDate(checkOut));
+
+                            if (storedDate.equals(normalizeDate(checkIn)) &&
                                     storedCheckOut.equals(normalizeDate(checkOut))) {
                                 isDuplicate = true;
                                 break;
@@ -252,8 +262,6 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                                     });
                         }
                     });
-            Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
-            startActivity(intent);
         }
 
 
