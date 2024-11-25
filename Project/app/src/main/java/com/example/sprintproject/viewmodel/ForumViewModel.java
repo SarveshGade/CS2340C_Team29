@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.sprintproject.model.ForumObserver;
 import com.example.sprintproject.model.SortByCheckIn;
 import com.example.sprintproject.model.SortByCheckOut;
 import com.example.sprintproject.model.SortStrategy;
 import com.example.sprintproject.model.SortingDecorator;
 import com.example.sprintproject.model.TravelCommunity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -29,9 +29,24 @@ public class ForumViewModel extends ViewModel {
     private final MutableLiveData<List<TravelCommunity>> forums =
             new MutableLiveData<>(new ArrayList<>());
     private boolean sortByCheckIn = true;
+    private final List<ForumObserver> observers = new ArrayList<>();
+
 
     public LiveData<List<TravelCommunity>> getForums() {
         return forums;
+    }
+    public void addObserver(ForumObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(ForumObserver observer) {
+        observers.remove(observer);
+    }
+
+    private void notifyObservers(List<TravelCommunity> updatedForums) {
+        for (ForumObserver observer : observers) {
+            observer.onForumsLoaded(updatedForums);
+        }
     }
 
     private SortStrategy sortStrategy;
@@ -122,6 +137,7 @@ public class ForumViewModel extends ViewModel {
         if (forums.getValue() != null && sortStrategy != null) {
             List<TravelCommunity> sortedList = sortStrategy.sort(forums.getValue());
             forums.setValue(sortedList);
+            notifyObservers(sortedList);
         }
     }
 

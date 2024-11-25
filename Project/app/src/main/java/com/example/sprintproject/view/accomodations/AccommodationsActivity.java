@@ -88,7 +88,6 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
         addAccommodationButton.setOnClickListener(v -> showAccommodationDialog());
         loadAccommodations();
 
-        // Navigation button click listeners
         logisticsButton.setOnClickListener(v -> {
             Intent intent = new Intent(AccommodationsActivity.this, LogisticsActivity.class);
             startActivity(intent);
@@ -267,7 +266,6 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
             String checkInStr = checkIn != null ? dateFormat.format(checkIn) : "Invalid Date";
             String checkOutStr = checkOut != null ? dateFormat.format(checkOut) : "Invalid Date";
 
-            // Determine if the reservation is past or upcoming
             String status = (checkIn != null && checkIn.before(currentDate)) ? "Status: Past"
                     : "Status: Upcoming";
 
