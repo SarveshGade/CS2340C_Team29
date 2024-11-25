@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CS2340 - Team 29 Project</title>
+  <meta name="viewport" content="width=device-width">
+
+  <!-- syntax highlighting CSS -->
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+  <!-- Custom styles for this template -->
+  <link href="../css/navbar-top-fixed.css" rel="stylesheet">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+
+       <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+
+    </head>
+    <body>
+
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+          <a class="navbar-brand" href=".">CS2340</a>
+          <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+      </nav>
+
+      <main role="main" class="container">
+      
+<h1 id="cs2340-program-design-paradigms">CS2340 - Team 29 Project</h1>
+
+<h2 id="team">Team Members</h2>
+
+<ul>
+  <li>Usman Rashid</li>
+  <li>Tanmay Gupta</li>
+  <li>Sarvesh Gade</li>
+  <li>Evan Romero</li>
+  <li>Ariyika Kumar</li>
+  <li>Tri Nguyen</li>
+</ul>
+<p2>All team members helped in creating this portfolio.</p2>
+
+<h2 id="intro">Introduction</h2>
+
+<p>WanderSync: A Collaborative Travel Management System simplifies creating and managing travel itineraries for solo and group travelers.
+  Using a user friendly interface, the app allows users organize destinations, transportation schedules, accommodations, dining reservations, and personal notes.
+  The key features of the app are ecure account creation, real-time collaboration tools for group planning, and seamless integration of travel details. 
+  Users can share notes, create shared agendas, and synchronize updates across all group members.
+  The project took 4 sprints, where the group focused on builiding the core features of the app, 
+  while following differect programming best practices and patterns. Diagrams were made to better organize and 
+  visualize the system.
+ </p>
+
+
+<h2 id="design-arch">Design & Architecture</h2>
+<p>To better understand the system and to be able to organize it visually,
+  we made a Domain Model, Design Class Diagram, and Use Case Digram.
+</p>
+<title>Scroll Animation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 20px;
+    }
+
+    .section {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      text-align: center;
+      margin-bottom: 50px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .section img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h4 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="section">
+      <h4>Domain Model</h4>
+      <img src="DomainModel.png" alt="Domain Model Diagram">
+      <p>The domain model shows the different attributes and classes of the system.</p>
+    </div>
+
+    <div class="section">
+      <h4>Design Class Diagram</h4>
+      <img src="DesignClass.png" alt="Design Class Diagram">
+      <p>Shows the different classes and their relation to other classes. This shows the methods and how their parameters interact with the attributes.</p>
+    </div>
+
+    <div class="section">
+      <h4>Use Case Diagram</h4>
+      <img src="UseCase.png" alt="Use Case Diagram">
+      <p>Shows the functionality of logging in, adding a location, and how it is saved to Firestore.</p>
+    </div>
+  </div>
+
+  <script>
+    // Function to check if an element is in the viewport
+    function isInViewport(element) {
+      const rect = element.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+
+    // Scroll event listener to handle animations
+    const sections = document.querySelectorAll('.section');
+
+    function handleScroll() {
+      sections.forEach(section => {
+        if (isInViewport(section)) {
+          section.classList.add('visible');
+        }
+      });
+    }
+
+    // Run the handler on scroll and initially to ensure visible elements are animated
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('load', handleScroll);
+  </script>
+
+<h4>Design Patterns</h4>
+
+<h5> Singleton Pattern</h5>
+<p>Singleton ensures that a class can only have one instance and provides global access for that
+  instance. We implement Singleton with FirestoreManager as the constructor is private and we
+  have a public static method for getting an instance of FirestoreManager, ensuring that there can
+  only be a single instance. We use FirestoreManager to manage our user and destination database
+  and perform FirestoreManager.getInstance() when saving a user’s data to database and
+  destination information. This method will always return the same instance of FirestoreManager
+  allowing for consistent interactions and thread safety</p>
+
+  <img src="singleton.png" alt="Domain Model Diagram" width="650" height="400">
+
+
+
+<h5>MVVM Architecture</h5>
+
+<ul>
+  <li>View: Represents the UI elements that are displayed to the user. It is responsible for presenting the data to the user.
+    This contains the buttons, text fields, and UI components.
+  </li>
+
+  <li>ViewModel: Acts as the middle layer that allows for communication between the View and Model.
+    This contains logic for registering and adding users, allowing users to post to the forum, 
+    and for users to log their travels. </li>
+
+  <li>Model: Represents the data and business logic of the application. 
+    This contains data related to travel itinerary data, user information, and our database.
+  </li>
+</ul>
+
+<img src="view.png" alt="Domain Model Diagram" width="" height="300">
+<img src="model.png" alt="Domain Model Diagram" width="" height="300">
+
+
+
+
+
+
+<h5>Observer Pattern</h5>
+
+<p>In our code, the Observer Pattern was used to manage updates to the users reservations. The
+  DiningActivity class acts as the subject, and it maintains a list of observers, such as
+  ReservationsObserver, which listens for changes in the reservations list. DiningActivity notifies
+  all the observers when new reservations are added or existing ones are modified, and the app will
+  then update the UI to reflect these changes. Components can subscribe to updates by using the
+  addObserver() method and unsubscribe by using removeObserver(). The notifyObservers()
+  method notifies the subscribed observers with the updated reservations. A similar method was
+  employed for the AccomodationActivity class.</p>
+
+  <img src="ObsPatt.png" alt="Domain Model Diagram" width="650" height="400">
+
+
+
+
+
+<h2 id="ui">User Interface</h2>
+<p>The main screens for the WanderSync app are: Logistics, Accomodations, Dining, Location, Forum
+  and the login page.
+</p>
+
+
+
+<title>Grid Layout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-item {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .grid-item img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 5px;
+    }
+
+    .grid-item h4 {
+      margin: 10px 0;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    .grid-item p {
+      margin: 0;
+      color: #666;
+    }
+
+    /* Center the last row's items */
+    .grid-container > .last-row {
+      grid-column: span 3;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-container">
+    <!-- First Row -->
+    <div class="grid-item">
+      <h4>Welcome Page</h4>
+      <img src="login.png" alt="Welcome Page">
+      <p>Users are greeted with a beautiful welcome page upon start of app.</p>
+    </div>
+    <div class="grid-item">
+      <h4>Login Page</h4>
+      <img src="loginpage.png" alt="Login Page">
+      <p>Users can login or register if they do not have an account.</p>
+    </div>
+    <div class="grid-item">
+      <h4>Logistics Page</h4>
+      <img src="logistics.png" alt="Logistics Page">
+      <p>The logistics page is where users can invite others and make a graph of the planned and remaining time for their trip.</p>
+    </div>
+
+    <!-- Second Row -->
+    <div class="grid-item">
+      <h4>Location Page</h4>
+      <img src="location.png" alt="Location Page">
+      <p>Location is where users can see upcoming locations and how long their stay is.</p>
+    </div>
+    <div class="grid-item">
+      <h4>Accommodations Page</h4>
+      <img src="accomodation.png" alt="Accommodations Page">
+      <p>Users can add accommodations and sort them by check-in or check-out.</p>
+    </div>
+    <div class="grid-item">
+      <h4>Dining Page</h4>
+      <img src="dining.png" alt="Dining Page">
+      <p>Dining stores all the different restaurants along with reservations and websites for the restaurant.</p>
+    </div>
+
+    <!-- Last Row -->
+    <div class="last-row">
+      <div class="grid-item">
+        <h4>Forum Page</h4>
+        <img src="forum.png" alt="Forum Page">
+        <p>Users can add posts to the forum after their trip to allow others to see their experience and collaborate on trip ideas.</p>
+      </div>
+      <div class="grid-item">
+        <h4>Invite User Function</h4>
+        <img src="inviteUser.png" alt="Invite User Function">
+        <p>Users can invite other users to build trip plans together.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<h2 id="course-outline">Functionality</h2>
+<h4>Walkthrough Video</h4>
+<iframe 
+  src="https://www.youtube.com/embed/MXOVAxA9a7Q" 
+  title="YouTube video player" 
+  width="640" 
+  height="360" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+  allowfullscreen>
+</iframe>
+<p>Watch this video to understand the core features of our app!</p>
+
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>The project outcomes were to work collaboratively as a group to create Wandersync and give it all of the functionalities of each screen of the app that are shown above. For example, users should be able to create and add to their trips with new upcoming destinations and the accommodations of where they are staying. They can also invite other users and collaborate through the travel forum page which allows anyone in the group to edit their trip. The biggest challenge was implementing the collaborator functionality and making it so that users that are invited to the same trip group will have the same updated information displayed. We accomplished this by creating a tripID that can be used to connect the users with all of their firestore collections. Another challenge was time management and working together as a group which was the most important knowledge we gained throughout this project. We learned how to keep everyone updated and worked together as a team. The members discuss the functionalities they have completed or need help on and communicate their plans for the next step. 
+  The rest of the team would then share their opinions and list out requirements that need to be implemented and what they can contribute. 
+  Overall, the project was a valuable experience for everyone on the team.</p>
+
+
+
+
+      </main>
+
+      <!-- Bootstrap core JavaScript
+           ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+              integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+              integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+      <script src="../js/bootstrap.min.js"></script>
+    </body>
+</html>
