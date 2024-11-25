@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
+import com.example.sprintproject.model.Accomodation;
+import com.example.sprintproject.model.ForumObserver;
 import com.example.sprintproject.model.TravelCommunity;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
 import com.example.sprintproject.view.dining.DiningActivity;
@@ -31,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ForumActivity extends AppCompatActivity {
+public class ForumActivity extends AppCompatActivity implements ForumObserver {
     private ForumViewModel viewModel;
     private LinearLayout forumsList;
     private Button checkInButton;
@@ -49,11 +51,13 @@ public class ForumActivity extends AppCompatActivity {
         Button addTripButton = findViewById(R.id.addTripButton);
 
         viewModel = new ViewModelProvider(this).get(ForumViewModel.class);
+        viewModel.addObserver(this);
+
 
         viewModel.getForums().observe(this, forums -> {
             forumsList.removeAllViews();
             if (forums != null) {
-                displayForums(forums);
+                onForumsLoaded(forums);
             } else {
                 Toast.makeText(this, "Error loading posts", Toast.LENGTH_SHORT).show();
             }
@@ -116,6 +120,34 @@ public class ForumActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    public void onForumsLoaded(List<TravelCommunity> updatedForums) {
+        forumsList.removeAllViews();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        Date currentDate = new Date(); // Current date for comparison
+
+        for (TravelCommunity post : updatedForums) {
+            TextView forumView = new TextView(this);
+            forumView.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            forumView.setPadding(0, 16, 0, 16);
+            Date checkIn = post.getStartDate();
+            Date checkOut = post.getEndDate();
+
+
+            int duration = calculateDuration(checkIn, checkOut);
+            forumView.setText(String.format(
+                    "Username: %s\nDestination: %s\nAccommodations: %s\n"
+                            + "Dining: %s\nNotes: %s\nDuration: ",
+                    post.getUsername(),
+                    post.getDestination(),
+                    post.getAccommodation(),
+                    post.getDining(),
+                    post.getNotes(),
+                    duration
+            ));
+            forumsList.addView(forumView);
+        }
     }
 
     private void showAddTripDialog() {
@@ -207,26 +239,6 @@ public class ForumActivity extends AppCompatActivity {
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
         datePickerDialog.show();
-    }
-
-    private void displayForums(List<TravelCommunity> forums) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        for (TravelCommunity post : forums) {
-            TextView forumView = new TextView(this);
-            forumView.setLayoutParams(new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            forumView.setPadding(0, 16, 0, 16);
-            Date checkIn = post.getStartDate();
-            Date checkOut = post.getEndDate();
-            int duration = calculateDuration(checkIn, checkOut);
-            forumView.setText(String.format(
-                    "Username: %s\nDestination: %s\nAccomodations: %s\nDining: %s\n"
-                            + "Notes: %s\nDuration: %d",
-                    post.getUsername(), post.getDestination(), post.getAccommodation(),
-                    post.getDining(), post.getNotes(), duration
-            ));
-            forumsList.addView(forumView);
-        }
     }
 
     private String formatDate(Date date) {
