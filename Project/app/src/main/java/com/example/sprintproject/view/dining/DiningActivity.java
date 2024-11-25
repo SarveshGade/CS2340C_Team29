@@ -180,24 +180,54 @@ public class DiningActivity extends AppCompatActivity implements ReservationsObs
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
+    private Date normalizeDate(Date inputDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(inputDate);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);  // Set milliseconds to zero
+        return calendar.getTime();
+    }
+
     private void saveReservation(String location, Date dateTime, String website) {
-        String userId = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Users").document(userId)
+        db.collection("Dining")
+                .whereEqualTo("location", location)
+                .whereEqualTo("website", website)
                 .get()
-                .addOnSuccessListener(userDoc -> {
-                    String tripID = userDoc.getString("tripID");
-                    db.collection("Dining").add(
-                            new Dining(location, dateTime, website, tripID))
-                            .addOnSuccessListener(aVoid -> Toast.makeText(
-                                    DiningActivity.this,
-                                    "Reservation added successfully!",
-                                    Toast.LENGTH_SHORT).show())
-                            .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
-                                    "Error adding reservation", Toast.LENGTH_SHORT).show());
+                    .addOnSuccessListener(querySnapshot -> {
+                        boolean isDuplicate = false;
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Dining reservation = document.toObject(Dining.class);
+                            Date storedDate = normalizeDate(reservation.getDateTime());
+
+                            if (storedDate.equals(normalizeDate(dateTime))) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+                    if (isDuplicate) {
+                        Toast.makeText(DiningActivity.this,
+                                "Duplicate reservation! Please modify the details.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Add the new reservation
+                        String userId = mAuth.getCurrentUser() != null
+                                ? mAuth.getCurrentUser().getUid() : "unknown_user";
+                        db.collection("Users").document(userId)
+                                .get()
+                                .addOnSuccessListener(userDoc -> {
+                                    String tripID = userDoc.getString("tripID");
+                                    reservations.add(new Dining(location, dateTime, website, tripID));
+                                    db.collection("Dining").add(
+                                                    new Dining(location, dateTime, website, tripID))
+                                            .addOnSuccessListener(aVoid -> Toast.makeText(
+                                                    DiningActivity.this,
+                                                    "Reservation added successfully!",
+                                                    Toast.LENGTH_SHORT).show())
+                                            .addOnFailureListener(e -> Toast.makeText(DiningActivity.this,
+                                                    "Error adding reservation", Toast.LENGTH_SHORT).show());
+                                });
+                    }
                 });
-        Intent intent = new Intent(DiningActivity.this, DiningActivity.class);
-        startActivity(intent);
     }
 
     private void loadReservations() {

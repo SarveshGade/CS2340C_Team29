@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.sprintproject.R;
 import com.example.sprintproject.model.Accomodation;
 import com.example.sprintproject.model.AccomodationsObserver;
+import com.example.sprintproject.model.Dining;
 import com.example.sprintproject.view.dining.DiningActivity;
 import com.example.sprintproject.view.forum.ForumActivity;
 import com.example.sprintproject.view.location.LocationActivity;
@@ -199,28 +201,74 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void saveAccommodation(String location, Date checkIn, Date checkOut,
-                                        int numRooms, String roomType) {
-        String userId = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Users").document(userId)
-                .get()
-                .addOnSuccessListener(userDoc -> {
-                    String tripID = userDoc.getString("tripID");
-                    db.collection("accommodation").add(new Accomodation(location,
-                                    checkIn, checkOut, numRooms, roomType, tripID))
-                            .addOnSuccessListener(aVoid -> Toast.makeText(
-                                    AccommodationsActivity.this,
-                                    "Accommodation added successfully!",
-                                    Toast.LENGTH_SHORT).show())
-                            .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
-                                    "Error adding accommodation", Toast.LENGTH_SHORT).show());
-                });
-        Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
-        startActivity(intent);
+    private Date normalizeDate(Date inputDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(inputDate);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
+    private void saveAccommodation(String location, Date checkIn, Date checkOut,
+                                        int numRooms, String roomType) {
+            db.collection("accommodation")
+                    .whereEqualTo("location", location)
+                    .whereEqualTo("numRooms", numRooms)
+                    .whereEqualTo("roomType" ,roomType)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        boolean isDuplicate = false;
+
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Accomodation accomodation = document.toObject(Accomodation.class);
+                            Date storedDate = normalizeDate(accomodation.getCheckInDate());
+                            Date storedCheckOut = normalizeDate(accomodation.getCheckOutDate());
+
+                            Log.d("DEBUG", "Checking reservation: " + accomodation);
+                            Log.d("DEBUG", "Normalized stored check in date: " + storedDate);
+                            Log.d("DEBUG", "Normalized input check in date: " + normalizeDate(checkIn));
+                            Log.d("DEBUG", "Normalized stored check out date: " + storedCheckOut);
+                            Log.d("DEBUG", "Normalized input check out date: " + normalizeDate(checkOut));
+
+                            if (storedDate.equals(normalizeDate(checkIn)) &&
+                                    storedCheckOut.equals(normalizeDate(checkOut))) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+                        if (isDuplicate) {
+                            Toast.makeText(AccommodationsActivity.this,
+                                    "Duplicate reservation! Please modify the details.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Add the new reservation
+                            String userId = mAuth.getCurrentUser() != null
+                                    ? mAuth.getCurrentUser().getUid() : "unknown_user";
+                            db.collection("Users").document(userId)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        String tripID = userDoc.getString("tripID");
+                                        accommodations.add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID));
+                                        db.collection("accommodation").add(
+                                                        new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID))
+                                                .addOnSuccessListener(aVoid -> Toast.makeText(
+                                                        AccommodationsActivity.this,
+                                                        "Accommodation added successfully!",
+                                                        Toast.LENGTH_SHORT).show())
+                                                .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
+                                                        "Error adding accommodation", Toast.LENGTH_SHORT).show());
+                                    });
+                        }
+                    });
+        }
+
+
+
     private void loadAccommodations() {
+
+
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid()
                 : "unknown_user";
         db.collection("Users").document(userId)
