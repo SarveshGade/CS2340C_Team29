@@ -200,42 +200,63 @@ public class AccommodationsActivity extends AppCompatActivity implements Accomod
                 calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
+    private Date normalizeDate(Date inputDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(inputDate);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);  // Set milliseconds to zero
+        return calendar.getTime();
+    }
+
     private void saveAccommodation(String location, Date checkIn, Date checkOut,
                                         int numRooms, String roomType) {
+            db.collection("Dining")
+                    .whereEqualTo("location", location)
+                    .whereEqualTo("numRooms", numRooms)
+                    .whereEqualTo("roomType" ,roomType)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        boolean isDuplicate = false;
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            Accomodation accomodation = document.toObject(Accomodation.class);
+                            Date storedDate = normalizeDate(accomodation.getCheckInDate());
+                            Date storedCheckOut = normalizeDate(accomodation.getCheckOutDate());
 
-        for (Accomodation accomodation : accommodations) {
-            if (accomodation.getLocation().equalsIgnoreCase(location)
-                    && accomodation.getCheckInDate().equals(checkIn)
-                    && accomodation.getCheckOutDate().equals(checkOut)
-                    && accomodation.getNumRooms() == numRooms
-                    && accomodation.getRoomType().equalsIgnoreCase(roomType)) {
-                Toast.makeText(AccommodationsActivity.this,
-                        "Duplicate reservation! Please modify the details.",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
+                            if (storedDate.equals(normalizeDate(checkIn)) ||
+                                    storedCheckOut.equals(normalizeDate(checkOut))) {
+                                isDuplicate = true;
+                                break;
+                            }
+                        }
+                        if (isDuplicate) {
+                            Toast.makeText(AccommodationsActivity.this,
+                                    "Duplicate reservation! Please modify the details.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Add the new reservation
+                            String userId = mAuth.getCurrentUser() != null
+                                    ? mAuth.getCurrentUser().getUid() : "unknown_user";
+                            db.collection("Users").document(userId)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        String tripID = userDoc.getString("tripID");
+                                        accommodations.add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID));
+                                        db.collection("accommodation").add(
+                                                        new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID))
+                                                .addOnSuccessListener(aVoid -> Toast.makeText(
+                                                        AccommodationsActivity.this,
+                                                        "Accommodation added successfully!",
+                                                        Toast.LENGTH_SHORT).show())
+                                                .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
+                                                        "Error adding accommodation", Toast.LENGTH_SHORT).show());
+                                    });
+                        }
+                    });
+            Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
+            startActivity(intent);
         }
 
-        String userId = mAuth.getCurrentUser() != null
-                ? mAuth.getCurrentUser().getUid() : "unknown_user";
-        db.collection("Users").document(userId)
-                .get()
-                .addOnSuccessListener(userDoc -> {
 
-                    String tripID = userDoc.getString("tripID");
-                    accommodations.add(new Accomodation(location, checkIn, checkOut, numRooms, roomType, tripID));
-                    db.collection("accommodation").add(new Accomodation(location,
-                                    checkIn, checkOut, numRooms, roomType, tripID))
-                            .addOnSuccessListener(aVoid -> Toast.makeText(
-                                    AccommodationsActivity.this,
-                                    "Accommodation added successfully!",
-                                    Toast.LENGTH_SHORT).show())
-                            .addOnFailureListener(e -> Toast.makeText(AccommodationsActivity.this,
-                                    "Error adding accommodation", Toast.LENGTH_SHORT).show());
-                });
-        Intent intent = new Intent(AccommodationsActivity.this, AccommodationsActivity.class);
-        startActivity(intent);
-    }
 
     private void loadAccommodations() {
 
