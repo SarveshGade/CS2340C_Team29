@@ -61,6 +61,14 @@ public class ForumTest {
     }
 
     @Test
+    public void testCalculateDurationBothDatesValid() {
+        Date startDate = new Date(2024 - 1900, 11, 20); // Dec 20, 2024
+        Date endDate = new Date(2024 - 1900, 11, 25);   // Dec 25, 2024
+        int duration = ForumActivity.calculateDuration(startDate, endDate);
+        assertEquals(5, duration); // Expected duration is 5 days
+    }
+
+    @Test
     public void testValidateNullAccommodation() {
         String result = forumViewModel.validateTripInput(
                 new Date(),   new Date(),             "Destination",
