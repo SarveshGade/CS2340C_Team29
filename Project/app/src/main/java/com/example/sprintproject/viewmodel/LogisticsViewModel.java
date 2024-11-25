@@ -101,12 +101,19 @@ public class LogisticsViewModel extends ViewModel {
             Log.w(TAG, "Trip ID is not set.");
             return;
         }
+        if (!validateNote(text)) {
+            Log.e(TAG, "Note cannot be empty");
+        }
 
         Note newNote = new Note(text, new Date(), tripIdValue, userEmail);
         db.collection("Notes").add(newNote).addOnSuccessListener(documentReference -> {
             Log.i(TAG, "Note added successfully.");
             loadNotes(); // Reload notes after adding
         }).addOnFailureListener(e -> Log.e(TAG, "Error adding note", e));
+    }
+
+    public boolean validateNote(String text) {
+        return !text.isEmpty();
     }
 
     public void loadNotes() {
@@ -129,7 +136,7 @@ public class LogisticsViewModel extends ViewModel {
     }
 
     public void inviteUser(String email) {
-        if (email == null || email.isEmpty()) {
+        if (!validateEmail(email)) {
             inviteStatus.setValue(false); // Invalid email
             return;
         }
@@ -183,5 +190,9 @@ public class LogisticsViewModel extends ViewModel {
                     Log.e("LogisticsViewModel", "Error querying user by email", e);
                     inviteStatus.setValue(false); // Error finding user
                 });
+    }
+
+    public boolean validateEmail(String email) {
+        return (email != null && !email.isEmpty());
     }
 }

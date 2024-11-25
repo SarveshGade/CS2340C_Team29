@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.sprintproject.R;
-import com.example.sprintproject.model.Accomodation;
 import com.example.sprintproject.model.ForumObserver;
 import com.example.sprintproject.model.TravelCommunity;
 import com.example.sprintproject.view.accomodations.AccommodationsActivity;
